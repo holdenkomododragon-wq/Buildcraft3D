@@ -55,7 +55,7 @@ export default function Sidebar({ onNavigate }) {
       <div className="mt-auto border-t border-[#1f1f1f] p-3">
         {user ? (
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ff2e8c] text-[12px] font-bold text-white">{(user.full_name || user.email || '?')[0].toUpperCase()}</div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#00cc66] text-[12px] font-bold text-white">{(user.full_name || user.email || '?')[0].toUpperCase()}</div>
             <div className="min-w-0 flex-1">
               <div className="truncate text-[12px] font-medium text-white">{user.full_name || 'Builder'}</div>
               <div className="truncate text-[10px] text-[#71717a]">{user.email}</div>
@@ -71,7 +71,7 @@ export default function Sidebar({ onNavigate }) {
                 <div className="text-[10px] text-[#71717a]">Not signed in</div>
               </div>
             </div>
-            <Link to="/login" className="block rounded-md bg-[#ff2e8c] py-2 text-center text-[12px] font-semibold text-white transition-opacity hover:opacity-90">Sign in to save builds</Link>
+            <Link to="/login" className="block rounded-md bg-[#00cc66] py-2 text-center text-[12px] font-semibold text-white transition-opacity hover:opacity-90">Sign in to save builds</Link>
           </div>
         )}
       </div>

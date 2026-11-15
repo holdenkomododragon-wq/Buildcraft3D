@@ -5,7 +5,7 @@ import { money } from '@/lib/catalogMeta';
 
 const COMPAT = {
   compatible: { label: 'Compatible', color: '#3b82f6', Icon: BadgeCheck },
-  warning: { label: 'Warnings', color: '#f59e0b', Icon: AlertTriangle },
+  warning: { label: 'Warnings', color: '#f1c40f', Icon: AlertTriangle },
   incompatible: { label: 'Incompatible', color: '#ef4444', Icon: XCircle },
   unknown: { label: 'Unverified', color: '#94a3b8', Icon: HelpCircle },
 };
@@ -28,10 +28,10 @@ function TitleEditor() {
   const [edit, setEdit] = useState(false);
   const [val, setVal] = useState('');
   const commit = () => { const v = val.trim(); if (v) patch({ title: v }); setEdit(false); };
-  if (edit) return <input autoFocus value={val} onChange={(e) => setVal(e.target.value)} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEdit(false); }} className="w-52 rounded-md border border-[#ff2e8c] bg-[#0d0d0d] px-2 py-0.5 text-[14px] font-semibold text-white outline-none" />;
+  if (edit) return <input autoFocus value={val} onChange={(e) => setVal(e.target.value)} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setEdit(false); }} className="w-52 rounded-md border border-[#00cc66] bg-[#0d0d0d] px-2 py-0.5 text-[14px] font-semibold text-white outline-none" />;
   return (
     <button onClick={() => { setVal(build.title); setEdit(true); }} className="group flex items-center gap-1.5 text-[15px] font-semibold text-white">
-      {build.title}<Pencil className="h-3.5 w-3.5 text-[#5f5f68] group-hover:text-[#ff2e8c]" />
+      {build.title}<Pencil className="h-3.5 w-3.5 text-[#5f5f68] group-hover:text-[#00cc66]" />
     </button>
   );
 }
@@ -49,11 +49,11 @@ export default function TelemetryBar({ onOpen }) {
         <span className="text-[11px] text-[#71717a]">{new Date(build.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
-        <Pill label="Price breakdown" color="#22c55e" Icon={DollarSign} onClick={() => onOpen('price')}>{money(price.total)}</Pill>
+        <Pill label="Price breakdown" color="#00cc66" Icon={DollarSign} onClick={() => onOpen('price')}>{money(price.total)}</Pill>
         <Pill label="Compatibility" color={c.color} Icon={c.Icon} onClick={() => onOpen('compat')}>{c.label}</Pill>
-        <Pill label="Power usage" color="#eab308" Icon={Zap} onClick={() => onOpen('power')}>{Math.round(power.total * 10) / 10}W</Pill>
+        <Pill label="Power usage" color="#f1c40f" Icon={Zap} onClick={() => onOpen('power')}>{Math.round(power.total * 10) / 10}W</Pill>
         {build.settings.showFps !== false && (
-          <Pill label="Benchmark" color="#f97316" Icon={Gauge} onClick={() => onOpen('bench')}>{bench.overall ? `3DMark ${bench.overall.toLocaleString()}` : 'No data'}</Pill>
+          <Pill label="Benchmark" color="#f1c40f" Icon={Gauge} onClick={() => onOpen('bench')}>{bench.overall ? `3DMark ${bench.overall.toLocaleString()}` : 'No data'}</Pill>
         )}
       </div>
     </div>

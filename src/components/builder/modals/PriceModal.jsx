@@ -19,7 +19,7 @@ export default function PriceModal() {
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 rounded-lg border border-[#27272f] bg-[#121215] px-2.5 py-2">
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${!showLive ? 'bg-[#71717a]' : liveCount ? 'bg-[#22c55e]' : 'bg-[#f59e0b]'}`} />
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${!showLive ? 'bg-[#71717a]' : liveCount ? 'bg-[#00cc66]' : 'bg-[#f1c40f]'}`} />
         <span className="text-[11px] leading-snug text-[#a1a1aa]">
           {!showLive
             ? 'Live retailer prices are hidden.'
@@ -30,7 +30,7 @@ export default function PriceModal() {
         <button
           onClick={() => refreshPrices(null, true).catch(() => null)}
           disabled={priceSyncing}
-          className="ml-auto flex shrink-0 items-center gap-1 rounded border border-[#2b2b33] px-2 py-1 text-[11px] font-medium text-[#d4d4d8] transition-colors hover:border-[#ff2e8c]/60 hover:text-white disabled:opacity-50"
+          className="ml-auto flex shrink-0 items-center gap-1 rounded border border-[#2b2b33] px-2 py-1 text-[11px] font-medium text-[#d4d4d8] transition-colors hover:border-[#00cc66]/60 hover:text-white disabled:opacity-50"
         >
           <RefreshCw className={`h-3 w-3 ${priceSyncing ? 'animate-spin' : ''}`} />{priceSyncing ? 'Updating…' : 'Refresh'}
         </button>
@@ -51,14 +51,14 @@ export default function PriceModal() {
                     href={o.url || undefined}
                     target="_blank"
                     rel="noreferrer"
-                    className={`flex items-center gap-0.5 rounded border border-[#2b2b33] px-1 py-px transition-colors hover:border-[#3a3a44] hover:text-white ${o.best ? 'text-[#4ade80]' : 'text-[#a1a1aa]'}`}
+                    className={`flex items-center gap-0.5 rounded border border-[#2b2b33] px-1 py-px transition-colors hover:border-[#3a3a44] hover:text-white ${o.best ? 'text-[#00cc66]' : 'text-[#a1a1aa]'}`}
                   >
                     {o.supplier} {money(o.price)}
                   </a>
                 ))}
               </div>
             </div>
-            <div className="tabular shrink-0 font-semibold text-[#22c55e]">{money(x.part.price * x.qty)}</div>
+            <div className="tabular shrink-0 font-semibold text-[#00cc66]">{money(x.part.price * x.qty)}</div>
             {productUrl(x.part) && (
               <a href={productUrl(x.part)} target="_blank" rel="noreferrer" className="shrink-0 rounded bg-[#0ea5e9] p-1.5 text-white" aria-label={`Open ${x.part.name} product page`}><ExternalLink className="h-3.5 w-3.5" /></a>
             )}
@@ -67,7 +67,7 @@ export default function PriceModal() {
         {!rows.length && <p className="py-6 text-center text-[12px] text-[#71717a]">No parts selected yet.</p>}
       </div>
 
-      <div className="flex items-center justify-between border-t border-[#27272f] pt-3"><span className="text-[13px] text-[#a1a1aa]">Component subtotal</span><span className="tabular text-[18px] font-semibold text-[#22c55e]">{money(summary.price.total)}</span></div>
+      <div className="flex items-center justify-between border-t border-[#27272f] pt-3"><span className="text-[13px] text-[#a1a1aa]">Component subtotal</span><span className="tabular text-[18px] font-semibold text-[#00cc66]">{money(summary.price.total)}</span></div>
       <p className="text-[11px] text-[#71717a]">
         {showLive
           ? 'Prices are the cheapest live listing at Amazon, Newegg or Micro Center for that exact part, refreshed by the hour. A highlighted supplier is the one the total is priced from. Tax and shipping are not included.'

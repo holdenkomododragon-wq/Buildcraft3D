@@ -18,6 +18,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkAppState = async () => {
+    if (!/^[a-f0-9]{24}$/i.test(appParams.appId || '')) {
+      setAppPublicSettings({ id: 'local-preview', public_settings: {} });
+      setIsLoadingPublicSettings(false);
+      setIsLoadingAuth(false);
+      setIsAuthenticated(false);
+      setAuthChecked(true);
+      return;
+    }
     try {
       setIsLoadingPublicSettings(true);
       setAuthError(null);

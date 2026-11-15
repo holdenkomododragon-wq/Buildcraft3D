@@ -3,7 +3,7 @@ import { Files, Trash2, Share2 } from 'lucide-react';
 import { money } from '@/lib/catalogMeta';
 import { useToast } from '@/components/ui/use-toast';
 
-const C = { compatible: ['#3b82f6', 'Compatible'], warning: ['#f59e0b', 'Warnings'], incompatible: ['#ef4444', 'Incompatible'], unknown: ['#94a3b8', 'Unverified'] };
+const C = { compatible: ['#3b82f6', 'Compatible'], warning: ['#f1c40f', 'Warnings'], incompatible: ['#ef4444', 'Incompatible'], unknown: ['#94a3b8', 'Unverified'] };
 
 export default function BuildCard({ b, onClone, onDelete, to }) {
   const [col, label] = C[b.compat_status] || C.unknown;
@@ -28,15 +28,15 @@ export default function BuildCard({ b, onClone, onDelete, to }) {
         {!b.case_name && !b.cpu_name && !b.gpu_name && <div className="text-[#52525b]">No PC parts</div>}
       </div>
       <div className="mt-3 flex items-center gap-4 text-[12px]">
-        <span className="tabular font-semibold text-[#22c55e]">{money(b.total_price)}</span>
-        <span className="tabular text-[#eab308]">{b.power_w || 0}W</span>
-        {!!b.timespy_estimate && <span className="tabular text-[#f97316]">~{b.timespy_estimate.toLocaleString()} est.</span>}
+        <span className="tabular font-semibold text-[#00cc66]">{money(b.total_price)}</span>
+        <span className="tabular text-[#f1c40f]">{b.power_w || 0}W</span>
+        {!!b.timespy_estimate && <span className="tabular text-[#f1c40f]">~{b.timespy_estimate.toLocaleString()} est.</span>}
         <span className="ml-auto rounded bg-[#1c1c1c] px-1.5 py-0.5 text-[10px] text-[#a1a1aa]">{b.build_category}</span>
       </div>
       <div className="mt-4 flex gap-2">
-        <Link to={to || `/b/${b.id}`} className="flex-1 rounded-md bg-[#ff2e8c] py-1.5 text-center text-[12px] font-semibold text-white hover:opacity-90">View Build</Link>
-        <button onClick={share} title="Copy public link" aria-label="Copy public link" className="rounded-md border border-[#2e2e2e] px-2.5 text-[#a1a1aa] hover:border-[#ff2e8c] hover:text-white"><Share2 className="h-3.5 w-3.5" /></button>
-        {onClone && <button onClick={() => onClone(b)} className="flex items-center gap-1.5 rounded-md border border-[#2e2e2e] px-3 py-1.5 text-[12px] hover:border-[#ff2e8c]"><Files className="h-3.5 w-3.5" />Clone</button>}
+        <Link to={to || `/b/${b.id}`} className="flex-1 rounded-md bg-[#00cc66] py-1.5 text-center text-[12px] font-semibold text-white hover:opacity-90">View Build</Link>
+        <button onClick={share} title="Copy public link" aria-label="Copy public link" className="rounded-md border border-[#2e2e2e] px-2.5 text-[#a1a1aa] hover:border-[#00cc66] hover:text-white"><Share2 className="h-3.5 w-3.5" /></button>
+        {onClone && <button onClick={() => onClone(b)} className="flex items-center gap-1.5 rounded-md border border-[#2e2e2e] px-3 py-1.5 text-[12px] hover:border-[#00cc66]"><Files className="h-3.5 w-3.5" />Clone</button>}
         {onDelete && <button onClick={() => onDelete(b)} className="rounded-md border border-[#2e2e2e] px-2.5 text-[#a1a1aa] hover:border-[#ef4444] hover:text-[#ef4444]" aria-label="Delete build"><Trash2 className="h-3.5 w-3.5" /></button>}
       </div>
     </div>

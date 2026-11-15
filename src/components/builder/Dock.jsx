@@ -15,7 +15,7 @@ function Btn({ icon: Icon, label, children, active }) {
     <Popover>
       <PopoverTrigger asChild>
         <button className={`${trigger} ${active ? 'text-white' : ''}`}>
-          <Icon className={`h-4 w-4 ${active ? 'text-[#ff2e8c]' : ''}`} strokeWidth={1.7} />{label}
+          <Icon className={`h-4 w-4 ${active ? 'text-[#00cc66]' : ''}`} strokeWidth={1.7} />{label}
         </button>
       </PopoverTrigger>
       <PopoverContent side="top" className={panel}>{children}</PopoverContent>
@@ -33,7 +33,7 @@ export default function Dock({ onRender }) {
         <div className="mb-2 flex items-center justify-between"><span className="font-semibold">Fan animation</span><Switch checked={s.fansOn} onCheckedChange={(v) => setSettings({ fansOn: v })} /></div>
         <div className="mb-1 flex justify-between text-[#a1a1aa]"><span>Master speed</span><span className="tabular">{s.rpm} RPM</span></div>
         <Slider value={[s.rpm]} min={300} max={2400} step={50} onValueChange={([v]) => setSettings({ rpm: v })} />
-        <div className="mt-3 grid grid-cols-4 gap-1">{PRESETS.map(([n, v]) => <button key={n} onClick={() => setSettings({ rpm: v })} className="rounded border border-[#242424] py-1 text-[10px] hover:border-[#ff2e8c]">{n}</button>)}</div>
+        <div className="mt-3 grid grid-cols-4 gap-1">{PRESETS.map(([n, v]) => <button key={n} onClick={() => setSettings({ rpm: v })} className="rounded border border-[#242424] py-1 text-[10px] hover:border-[#00cc66]">{n}</button>)}</div>
         <p className="mt-2 text-[10px] text-[#71717a]">Visual preview only. This does not control real fans.</p>
       </Btn>
       <Btn icon={PanelRight} label="Config" active={s.showGlass}>
@@ -41,9 +41,9 @@ export default function Dock({ onRender }) {
       </Btn>
       <Btn icon={Sparkles} label="RGB" active={s.rgbMode !== 'off'}>
         <div className="mb-2 font-semibold">RGB lighting</div>
-        <div className="mb-2 grid grid-cols-2 gap-1">{MODES.map(([k, n]) => <button key={k} onClick={() => setSettings({ rgbMode: k })} className={`rounded border py-1 text-[11px] ${s.rgbMode === k ? 'border-[#ff2e8c] bg-[#ff2e8c]/10' : 'border-[#242424] hover:border-[#3a3a3a]'}`}>{n}</button>)}</div>
+        <div className="mb-2 grid grid-cols-2 gap-1">{MODES.map(([k, n]) => <button key={k} onClick={() => setSettings({ rgbMode: k })} className={`rounded border py-1 text-[11px] ${s.rgbMode === k ? 'border-[#00cc66] bg-[#00cc66]/10' : 'border-[#242424] hover:border-[#3a3a3a]'}`}>{n}</button>)}</div>
         <div className="flex items-center gap-2">
-          <input type="color" value={hexOk(s.rgbColor) ? s.rgbColor : '#ff2e8c'} onChange={(e) => setSettings({ rgbColor: e.target.value, rgbMode: 'solid' })} className="h-8 w-10 cursor-pointer rounded border border-[#242424] bg-transparent" />
+          <input type="color" value={hexOk(s.rgbColor) ? s.rgbColor : '#00cc66'} onChange={(e) => setSettings({ rgbColor: e.target.value, rgbMode: 'solid' })} className="h-8 w-10 cursor-pointer rounded border border-[#242424] bg-transparent" />
           <input value={s.rgbColor} onChange={(e) => setSettings({ rgbColor: e.target.value })} className="w-24 rounded-md border border-[#242424] bg-[#0d0d0d] px-2 py-1 uppercase" />
           <span className="tabular text-[10px] text-[#71717a]">{hexOk(s.rgbColor) ? [1, 3, 5].map((i) => parseInt(s.rgbColor.slice(i, i + 2), 16)).join(', ') : ''}</span>
         </div>

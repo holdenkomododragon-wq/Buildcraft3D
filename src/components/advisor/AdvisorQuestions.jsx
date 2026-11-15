@@ -21,11 +21,11 @@ export default function AdvisorQuestions({ questions, onAnswer, disabled }) {
                 const on = chosen.includes(opt);
                 if (!q.multi) {
                   return (
-                    <button key={opt} type="button" disabled={disabled} onClick={() => onAnswer(opt)} className="rounded-full border border-[#2a2a2a] bg-[#161616] px-2.5 py-1 text-[11px] text-[#b3b3bb] transition-colors hover:border-[#ff2e8c] hover:text-white disabled:opacity-60">{opt}</button>
+                    <button key={opt} type="button" disabled={disabled} onClick={() => onAnswer(opt)} className="rounded-full border border-[#2a2a2a] bg-[#161616] px-2.5 py-1 text-[11px] text-[#b3b3bb] transition-colors hover:border-[#00cc66] hover:text-white disabled:opacity-60">{opt}</button>
                   );
                 }
                 return (
-                  <button key={opt} type="button" disabled={disabled} onClick={() => toggle(q, opt)} className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] transition-colors disabled:opacity-60 ${on ? 'border-[#ff2e8c] bg-[#ff2e8c]/15 text-white' : 'border-[#2a2a2a] bg-[#161616] text-[#b3b3bb] hover:border-[#3d3d3d] hover:text-white'}`}>
+                  <button key={opt} type="button" disabled={disabled} onClick={() => toggle(q, opt)} className={`flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] transition-colors disabled:opacity-60 ${on ? 'border-[#00cc66] bg-[#00cc66]/15 text-white' : 'border-[#2a2a2a] bg-[#161616] text-[#b3b3bb] hover:border-[#3d3d3d] hover:text-white'}`}>
                     {on ? <Check className="h-3 w-3" /> : null}{opt}
                   </button>
                 );
@@ -36,7 +36,7 @@ export default function AdvisorQuestions({ questions, onAnswer, disabled }) {
                 type="button"
                 disabled={disabled || !chosen.length}
                 onClick={() => { onAnswer(chosen.join(', ')); setPicked((p) => ({ ...p, [q.id]: [] })); }}
-                className="rounded bg-[#ff2e8c] px-2 py-0.5 text-[10px] font-semibold text-white disabled:opacity-40"
+                className="rounded bg-[#00cc66] px-2 py-0.5 text-[10px] font-semibold text-white disabled:opacity-40"
               >Send answer</button>
             )}
           </div>

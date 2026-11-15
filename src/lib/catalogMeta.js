@@ -32,7 +32,7 @@ export const DEFAULT_SETTINGS = {
   fansOn: true,
   rpm: 1200,
   rgbMode: 'solid',
-  rgbColor: '#ff2a85',
+  rgbColor: '#00cc66',
   showGlass: true,
   showGrid: true,
   // display toggles: hide the live retailer price feed or the predicted frame rates

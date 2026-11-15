@@ -35,7 +35,7 @@ export default function PartSearchResults({ q, onDone }) {
             <div className="truncate text-[13px] font-medium">{p.name}</div>
             <div className="text-[11px] text-[#71717a]">{SLOT_LABEL[p.category]} · {p.brand}</div>
           </div>
-          <div className="tabular text-[13px] font-semibold text-[#22c55e]">{money(p.price)}</div>
+          <div className="tabular text-[13px] font-semibold text-[#00cc66]">{money(p.price)}</div>
           <Plus className="h-3.5 w-3.5 text-[#71717a]" />
         </button>
       ))}

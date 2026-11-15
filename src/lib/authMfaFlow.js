@@ -97,17 +97,30 @@ const isInAppBrowser = () => /LinkedIn|Twitter/i.test(navigator.userAgent);
 
 // The app's sign-in settings: auth_config holds mfa_policy and the enabled sign-in methods.
 export async function loadSignInOptions() {
+  if (!/^[a-f0-9]{24}$/i.test(appParams.appId || '')) {
+    throw new Error('This project is not linked to a Base44 app. Run `base44 link` and start it with `base44 dev`.');
+  }
   const response = await fetch(`/api/apps/public/login-info/by-id/${appParams.appId}`);
-  if (!response.ok) throw new Error('Unable to load sign-in options');
-  return response.json();
+  const contentType = response.headers.get('content-type') || '';
+  if (!response.ok || !contentType.includes('application/json')) {
+    throw new Error('The Base44 login API did not return JSON. Start the app with `base44 dev` or open its published Base44 URL; standalone Vite cannot complete sign-in.');
+  }
+  try {
+    return await response.json();
+  } catch {
+    throw new Error('Base44 returned an invalid sign-in response. Check the app connection and try again.');
+  }
 }
 
 // provider: 'google' | 'microsoft' | 'facebook' | 'apple' | 'sso'. With manage, the sign-in opens
 // factor management. Returns to this app's /mfa page when MFA is needed.
 export async function signInWithProvider(provider, returnTo, { manage = false } = {}) {
   const info = await loadSignInOptions();
+  if (provider === 'sso' && !manage && !info.auth_config?.enable_sso_login && !info.auth_config?.use_workspace_sso) {
+    throw new Error('SSO is not enabled for this Base44 app. Configure SSOJet as the app identity provider in Base44 authentication settings.');
+  }
   // Enterprise SSO sign-in is exempt from Base44 MFA; only managing factors asks for it.
-  if (!manage && (info.auth_config?.mfa_policy !== 'required' || provider === 'sso')) {
+  if (!manage && provider !== 'sso' && info.auth_config?.mfa_policy !== 'required') {
     return base44.auth.loginWithProvider(provider, returnTo);
   }
   if (isInAppBrowser()) {

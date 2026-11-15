@@ -9,6 +9,33 @@ const SUPPLIERS = [
   { name: 'Newegg', test: /newegg/i },
   { name: 'Micro Center', test: /micro\s*center/i },
 ];
+const SUPPLIER_DOMAINS: Record<string, string[]> = {
+  Amazon: ['amazon.com'],
+  Newegg: ['newegg.com'],
+  'Micro Center': ['microcenter.com'],
+};
+
+function directRetailerUrl(source, value) {
+  const supplier = SUPPLIERS.find((item) => item.test.test(String(source || '')));
+  if (!supplier || !value) return false;
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase().replace(/^www\./, '');
+    const allowed = SUPPLIER_DOMAINS[supplier.name].some((domain) => host === domain || host.endsWith(`.${domain}`));
+    return url.protocol === 'https:' && allowed && !/(^|\/)s(?:earch)?(?:\/|$)/i.test(url.pathname);
+  } catch {
+    return false;
+  }
+}
+
+function urlKey(value) {
+  try {
+    const url = new URL(value);
+    return `${url.hostname.toLowerCase().replace(/^www\./, '')}${url.pathname.replace(/\/$/, '')}`;
+  } catch {
+    return '';
+  }
+}
 
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const STOP = new Set(['the', 'and', 'with', 'for', 'pro', 'plus', 'series', 'edition', 'black', 'white', 'wifi', 'gen', 'new', 'gb', 'tb', 'inch']);
@@ -51,7 +78,7 @@ async function rainLookup(key, part) {
 
 // no price API needed: Gemini is pointed at the live web with Google Search grounding and
 // reads the current listings straight off the retailers' pages
-const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest'];
+const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
 
 function geminiPrompt(part) {
   return `You are a price scout for a PC parts catalog. Today's date is ${new Date().toISOString().slice(0, 10)}.
@@ -87,18 +114,19 @@ async function geminiLookup(key, part) {
       const data = await res.json();
       const candidate = (data && data.candidates && data.candidates[0]) || {};
       const text = ((candidate.content && candidate.content.parts) || []).map((p) => (p && p.text) || '').join('');
-      const start = text.indexOf('{');
-      const end = text.lastIndexOf('}');
-      if (start < 0 || end < start) throw new Error(`${model} returned no JSON`);
-      const parsed = JSON.parse(text.slice(start, end + 1));
+      const parsed = JSON.parse(text);
       const listings = Array.isArray(parsed.listings) ? parsed.listings : [];
-      if (!listings.length) throw new Error(`${model} found no listings`);
-      return listings.map((l) => ({
+      const grounded = new Set(((candidate.groundingMetadata?.groundingChunks) || [])
+        .map((chunk) => urlKey(chunk?.web?.uri))
+        .filter(Boolean));
+      const verified = listings.map((l) => ({
         source: String((l && l.retailer) || ''),
         title: String((l && l.title) || ''),
         price: Number(l && l.price),
         url: String((l && l.url) || ''),
-      }));
+      })).filter((listing) => directRetailerUrl(listing.source, listing.url) && grounded.has(urlKey(listing.url)));
+      if (!verified.length) throw new Error(`${model} returned no grounded direct retailer product links`);
+      return verified;
     } catch (e) {
       lastError = e;
     }
@@ -115,7 +143,14 @@ async function lookup(part, keys) {
   ];
   for (const [name, run] of sources) {
     if (!keys[name]) continue;
-    try { return await run(keys[name]); } catch (e) { failures.push(String((e && e.message) || e)); }
+    try {
+      const rows = await run(keys[name]);
+      const verified = rows.filter((row) => directRetailerUrl(row.source, row.url) && Number.isFinite(row.price) && row.price > 0 && plausible(part, row.title));
+      if (verified.length) return { rows: verified, provider: name };
+      failures.push(`${name}: no verified direct product listings`);
+    } catch (e) {
+      failures.push(String((e && e.message) || e));
+    }
   }
   throw new Error(failures.join(' · ') || 'No price source configured');
 }
@@ -128,6 +163,7 @@ function pickOffers(part, rows) {
   SUPPLIERS.forEach((s) => {
     const candidates = rows
       .filter((r) => s.test.test(r.source) && Number.isFinite(r.price) && r.price > 0)
+      .filter((r) => directRetailerUrl(r.source, r.url))
       .filter((r) => plausible(part, r.title))
       .filter((r) => !ref || (r.price >= ref * 0.45 && r.price <= ref * 2.2))
       .sort((a, b) => a.price - b.price);
@@ -158,7 +194,7 @@ export default async function (req) {
     const keys = { serp: read('SERPAPI_KEY'), rain: read('RAINFOREST_API_KEY'), gemini: read('GEMINI_API_KEY') };
     if (!keys.serp && !keys.rain && !keys.gemini) {
       return Response.json({
-        error: 'No live price source is configured yet. Add your Gemini key (GEMINI_API_KEY) — it reads live retailer prices off the web — or a SerpApi key (SERPAPI_KEY) on the Secrets page.',
+        error: 'No live price source is configured. Add GEMINI_API_KEY, SERPAPI_KEY, or RAINFOREST_API_KEY in Base44 Secrets.',
       }, { status: 400 });
     }
 
@@ -174,6 +210,7 @@ export default async function (req) {
 
     const updated = [];
     const failures = [];
+    const providers = new Set();
     for (let i = 0; i < stale.length; i += 6) {
       const batch = stale.slice(i, i + 6);
       const settled = await Promise.allSettled(batch.map((p) => lookup(p, keys)));
@@ -183,7 +220,8 @@ export default async function (req) {
           failures.push(`${part.name}: ${String((res.reason && res.reason.message) || res.reason)}`);
           return;
         }
-        const offers = pickOffers(part, res.value);
+        providers.add(res.value.provider);
+        const offers = pickOffers(part, res.value.rows);
         if (!offers.length) {
           failures.push(`${part.name}: no matching listing at Amazon, Newegg or Micro Center`);
           return;
@@ -216,7 +254,7 @@ export default async function (req) {
       checked: stale.length,
       skipped: parts.length - stale.length,
       failures: failures.slice(0, 6),
-      provider: keys.serp ? 'serpapi' : keys.rain ? 'rainforest' : 'gemini',
+      provider: [...providers].join(',') || 'none',
     });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });

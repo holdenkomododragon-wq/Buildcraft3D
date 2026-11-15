@@ -58,9 +58,10 @@ export function addGpu(g, ctx, F, item) {
 
   // where the power plugs go: sockets on the top edge with the cables seated in them
   const plugs = gs.power_connector === '16-pin' ? 1 : (gs.board_power_w || 0) >= 320 ? 3 : 2;
-  pciePower(g, m, {
+  const powerExits = pciePower(g, m, {
     x: cx + len * 0.1, y: yTop + 2, z: bz + depth * 0.42,
     count: plugs, width: plugs === 1 ? 30 : 22, depth: plugs === 1 ? 16 : 14,
   });
   g.add(box(4, 4, depth - 20, m.metal, gpuRearX + 30, yTop - 8, cz));
+  return powerExits;
 }

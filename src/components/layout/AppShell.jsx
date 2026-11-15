@@ -9,7 +9,7 @@ import NewBuildDialog from '@/components/builder/NewBuildDialog';
 export default function AppShell() {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#0d0d0d] text-[#f5f5f7]">
+    <div className="flex h-screen w-full overflow-hidden bg-[#000000] text-[#f5f5f7]">
       <div className="hidden h-full md:block"><Sidebar /></div>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="left" className="w-[236px] border-[#262626] bg-[#0f0f0f] p-0">

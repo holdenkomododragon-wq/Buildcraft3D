@@ -23,7 +23,7 @@ export default function CompletedBuilds() {
       <p className="mt-1 text-[13px] text-[#71717a]">Public builds shared by the community. Clone one to make it your own.</p>
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search builds, CPUs, GPUs" className="w-64" />
-        {['All', ...BUILD_CATEGORIES].map((c) => <button key={c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1 text-[12px] ${cat === c ? 'bg-[#ff2e8c] text-white' : 'bg-[#1c1c1c] text-[#a1a1aa] hover:text-white'}`}>{c}</button>)}
+        {['All', ...BUILD_CATEGORIES].map((c) => <button key={c} onClick={() => setCat(c)} className={`rounded-full px-3 py-1 text-[12px] ${cat === c ? 'bg-[#00cc66] text-white' : 'bg-[#1c1c1c] text-[#a1a1aa] hover:text-white'}`}>{c}</button>)}
         <select value={sort} onChange={(e) => setSort(e.target.value)} className="ml-auto rounded-[7px] border border-[#232323] bg-[#131313] px-2 py-1.5 text-[12px]"><option value="new">Newest</option><option value="low">Lowest price</option><option value="high">Highest price</option></select>
       </div>
       <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

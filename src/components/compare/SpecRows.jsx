@@ -23,8 +23,8 @@ export default function SpecRows({ left, right }) {
           </div>
         );
         return (
-          <div key={s.key} className={`grid grid-cols-[104px_1fr_1fr] items-start gap-2 border-b border-[#1c1c1c] px-3 py-2 last:border-0 ${same ? '' : 'bg-[#ff2e8c]/[0.04]'}`}>
-            <span className={`text-[9.5px] font-semibold uppercase tracking-[0.12em] ${same ? 'text-[#5f5f68]' : 'text-[#ff7ab8]'}`}>{s.label}</span>
+          <div key={s.key} className={`grid grid-cols-[104px_1fr_1fr] items-start gap-2 border-b border-[#1c1c1c] px-3 py-2 last:border-0 ${same ? '' : 'bg-[#00cc66]/[0.04]'}`}>
+            <span className={`text-[9.5px] font-semibold uppercase tracking-[0.12em] ${same ? 'text-[#5f5f68]' : 'text-[#00cc66]'}`}>{s.label}</span>
             {cell(a, total(a))}
             {cell(b, total(b))}
           </div>

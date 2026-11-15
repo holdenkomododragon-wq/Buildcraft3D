@@ -5,7 +5,7 @@ export default function AdvisorBubble({ msg, isLast, disabled, onAnswer, onApply
   if (msg.role === 'user') {
     return (
       <div className="flex justify-end">
-        <p className="max-w-[85%] rounded-lg rounded-br-sm border border-[#ff2e8c]/30 bg-[#ff2e8c]/10 px-3 py-2 text-[12px] leading-relaxed text-[#f7d3e5]">{msg.content}</p>
+        <p className="max-w-[85%] rounded-lg rounded-br-sm border border-[#00cc66]/30 bg-[#00cc66]/10 px-3 py-2 text-[12px] leading-relaxed text-[#f1c40f]">{msg.content}</p>
       </div>
     );
   }

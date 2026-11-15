@@ -54,7 +54,7 @@ export default function Compare() {
           <h1 className="text-[24px] font-semibold">Compare builds</h1>
           <p className="mt-1 text-[13px] text-[#71717a]">Put two builds side by side to see exactly which parts and numbers differ.</p>
         </div>
-        <Link to="/my-builds" className="flex items-center gap-1.5 rounded-md border border-[#2e2e2e] bg-[#161616] px-3 py-1.5 text-[12px] text-[#d4d4d8] transition-colors hover:border-[#ff2e8c] hover:text-white">
+        <Link to="/my-builds" className="flex items-center gap-1.5 rounded-md border border-[#2e2e2e] bg-[#161616] px-3 py-1.5 text-[12px] text-[#d4d4d8] transition-colors hover:border-[#00cc66] hover:text-white">
           <FolderOpen className="h-3.5 w-3.5" />My saved builds
         </Link>
       </div>

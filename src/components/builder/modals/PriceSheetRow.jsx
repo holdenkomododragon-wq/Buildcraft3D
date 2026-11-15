@@ -30,7 +30,7 @@ export default function PriceSheetRow() {
 
   return (
     <div className="flex items-center gap-2 rounded-lg border border-[#27272f] bg-[#121215] px-2.5 py-2 text-[11px]">
-      <Sheet className="h-3.5 w-3.5 shrink-0 text-[#4ade80]" />
+      <Sheet className="h-3.5 w-3.5 shrink-0 text-[#00cc66]" />
       <span className="min-w-0 flex-1 truncate text-[#a1a1aa]">
         {sheet
           ? `Price sheet · ${sheet.rows || 0} parts · updated ${timeAgo(Date.parse(sheet.synced_at) || 0)}`
@@ -44,7 +44,7 @@ export default function PriceSheetRow() {
       <button
         onClick={sync}
         disabled={busy}
-        className="flex shrink-0 items-center gap-1 rounded border border-[#2b2b33] px-2 py-1 font-medium text-[#d4d4d8] transition-colors hover:border-[#ff2e8c]/60 hover:text-white disabled:opacity-50"
+        className="flex shrink-0 items-center gap-1 rounded border border-[#2b2b33] px-2 py-1 font-medium text-[#d4d4d8] transition-colors hover:border-[#00cc66]/60 hover:text-white disabled:opacity-50"
       >
         {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sheet className="h-3 w-3" />}{busy ? 'Syncing…' : 'Sync'}
       </button>

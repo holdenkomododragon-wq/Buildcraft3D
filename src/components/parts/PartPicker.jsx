@@ -68,21 +68,21 @@ export default function PartPicker({ slot, idx, onClose }) {
                 <div className="truncate text-[13px] font-medium">{x.p.name}</div>
                 <div className="text-[11px] text-[#71717a]">{x.p.brand}{x.bad ? <span className="ml-2 text-[#ef4444]">Conflict: {x.bad.message}</span> : null}</div>
               </div>
-              <div className="tabular text-[13px] font-semibold text-[#22c55e]">{money(x.p.price)}</div>
+              <div className="tabular text-[13px] font-semibold text-[#00cc66]">{money(x.p.price)}</div>
               </button>
             </div>
           ))}
           {!rows.shown.length && (
             <div className="py-8 text-center text-[12px] text-[#71717a]">
               {rows.trimmed ? 'Nothing in the catalog fits this case.' : 'No parts match.'}
-              {rows.trimmed && <button type="button" onClick={() => setFitOnly(false)} className="ml-1 text-[#ff7ab8] hover:underline">Show every part</button>}
+              {rows.trimmed && <button type="button" onClick={() => setFitOnly(false)} className="ml-1 text-[#00cc66] hover:underline">Show every part</button>}
             </div>
           )}
         </div>
         <div className="flex flex-wrap items-center gap-2 text-[10px] text-[#52525b]">
           <p>Prices are reference prices, not live retailer prices. Conflicting parts stay selectable, with a warning.</p>
           {fitByCase && (
-            <button type="button" onClick={() => setFitOnly(!fitOnly)} className={`ml-auto rounded-full border px-2 py-0.5 text-[10px] font-medium transition-colors ${fitOnly ? 'border-[#ff2e8c] text-[#ff7ab8]' : 'border-[#2a2a2a] text-[#8b8b94] hover:text-white'}`}>
+            <button type="button" onClick={() => setFitOnly(!fitOnly)} className={`ml-auto rounded-full border px-2 py-0.5 text-[10px] font-medium transition-colors ${fitOnly ? 'border-[#00cc66] text-[#00cc66]' : 'border-[#2a2a2a] text-[#8b8b94] hover:text-white'}`}>
               {fitOnly ? `Only parts that fit${rows.hidden ? ` · ${rows.hidden} hidden` : ''}` : 'Showing every part'}
             </button>
           )}

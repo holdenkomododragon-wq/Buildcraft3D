@@ -13,7 +13,7 @@ import { ALL_SLOTS, DEFAULT_SETTINGS, money, productUrl } from '@/lib/catalogMet
 
 const COMPAT = {
   compatible: { label: 'Compatible', color: '#3b82f6', Icon: BadgeCheck },
-  warning: { label: 'Warnings', color: '#f59e0b', Icon: AlertTriangle },
+  warning: { label: 'Warnings', color: '#f1c40f', Icon: AlertTriangle },
   incompatible: { label: 'Incompatible', color: '#ef4444', Icon: XCircle },
   unknown: { label: 'Unverified', color: '#94a3b8', Icon: HelpCircle },
 };
@@ -71,7 +71,7 @@ export default function SharedBuild() {
         <span className="ml-1 rounded-full bg-[#1c1c1c] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-[#b3b3bb]">Shared build</span>
         <div className="ml-auto flex items-center gap-2">
           <Link to="/products" className="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] font-medium text-[#b3b3bb] transition-colors hover:bg-[#171717] hover:text-white sm:flex"><ArrowLeft className="h-3.5 w-3.5" />Browse parts</Link>
-          <Link to="/" className="rounded-md bg-[#ff2e8c] px-3 py-1.5 text-[12px] font-semibold text-white transition-opacity hover:opacity-90">Build your own</Link>
+          <Link to="/" className="rounded-md bg-[#00cc66] px-3 py-1.5 text-[12px] font-semibold text-white transition-opacity hover:opacity-90">Build your own</Link>
         </div>
       </header>
 
@@ -81,7 +81,7 @@ export default function SharedBuild() {
         <div className="mx-auto max-w-md px-6 py-24 text-center">
           <h1 className="text-[20px] font-semibold text-white">This build isn't available</h1>
           <p className="mt-2 text-[13px] text-[#8b8b94]">The link may be wrong, or the builder has it set to private.</p>
-          <Link to="/" className="mt-6 inline-block rounded-md bg-[#ff2e8c] px-4 py-2 text-[12px] font-semibold text-white hover:opacity-90">Start your own build</Link>
+          <Link to="/" className="mt-6 inline-block rounded-md bg-[#00cc66] px-4 py-2 text-[12px] font-semibold text-white hover:opacity-90">Start your own build</Link>
         </div>
       )}
 
@@ -107,10 +107,10 @@ export default function SharedBuild() {
               {build.description && <p className="mt-3 text-[12.5px] leading-relaxed text-[#b3b3bb]">{build.description}</p>}
 
               <div className="mt-4 flex flex-wrap gap-1.5">
-                <Metric color="#22c55e" Icon={DollarSign}>{money(summary.price.total)}</Metric>
+                <Metric color="#00cc66" Icon={DollarSign}>{money(summary.price.total)}</Metric>
                 <Metric color={c.color} Icon={c.Icon}>{c.label}</Metric>
-                <Metric color="#eab308" Icon={Zap}>{Math.round(summary.power.total * 10) / 10}W</Metric>
-                <Metric color="#f97316" Icon={Gauge}>{summary.bench.overall ? `3DMark ${summary.bench.overall.toLocaleString()}` : 'No data'}</Metric>
+                <Metric color="#f1c40f" Icon={Zap}>{Math.round(summary.power.total * 10) / 10}W</Metric>
+                <Metric color="#f1c40f" Icon={Gauge}>{summary.bench.overall ? `3DMark ${summary.bench.overall.toLocaleString()}` : 'No data'}</Metric>
               </div>
 
               <div className="mt-4 rounded-xl border border-[#222] bg-[#121212] p-3">
@@ -131,7 +131,7 @@ export default function SharedBuild() {
           <section className="mt-6 rounded-xl border border-[#222] bg-[#121212]">
             <div className="flex items-center justify-between border-b border-[#222] px-4 py-2.5">
               <h2 className="text-[10px] font-semibold uppercase tracking-[0.16em] text-[#71717a]">Parts in this build</h2>
-              <span className="tabular text-[13px] font-semibold text-[#22c55e]">{money(summary.price.total)}</span>
+              <span className="tabular text-[13px] font-semibold text-[#00cc66]">{money(summary.price.total)}</span>
             </div>
             <div className="grid gap-x-8 px-4 py-2 sm:grid-cols-2">
               {ALL_SLOTS.filter((s) => summary.r[s.key]?.length).map((s) => (

@@ -187,12 +187,20 @@ export function makeFan(size, ctx, opts = {}) {
   g.add(cyl(size * 0.19, t * 0.6, m.fanHub, 0, 0, 0, 'z', size * 0.19, 26));
   g.add(cyl(size * 0.16, 1.4, m.fanCap, 0, 0, t * 0.3, 'z', size * 0.16, 26));
   const blades = new THREE.Group();
+  const bladeShape = new THREE.Shape();
+  bladeShape.moveTo(-mm(size * 0.065), mm(size * 0.12));
+  bladeShape.bezierCurveTo(-mm(size * 0.04), mm(size * 0.22), mm(size * 0.005), mm(size * 0.37), mm(size * 0.105), mm(size * 0.43));
+  bladeShape.bezierCurveTo(mm(size * 0.145), mm(size * 0.455), mm(size * 0.17), mm(size * 0.42), mm(size * 0.13), mm(size * 0.37));
+  bladeShape.bezierCurveTo(mm(size * 0.075), mm(size * 0.29), mm(size * 0.035), mm(size * 0.19), mm(size * 0.018), mm(size * 0.12));
+  bladeShape.bezierCurveTo(-mm(size * 0.008), mm(size * 0.08), -mm(size * 0.045), mm(size * 0.085), -mm(size * 0.065), mm(size * 0.12));
+  const bladeGeometry = new THREE.ExtrudeGeometry(bladeShape, { depth: mm(1.3), bevelEnabled: false, steps: 1 });
   for (let i = 0; i < 9; i++) {
     const pivot = new THREE.Group();
     pivot.rotation.z = (i / 9) * Math.PI * 2;
-    const bl = box(size * 0.17, size * 0.35, 1.3, bladeMat, 0, size * 0.29, 0);
-    bl.rotation.y = 0.62;
-    bl.rotation.z = 0.14;
+    const bl = new THREE.Mesh(bladeGeometry, bladeMat);
+    bl.position.z = -mm(0.65);
+    bl.castShadow = true;
+    bl.receiveShadow = true;
     pivot.add(bl);
     blades.add(pivot);
   }

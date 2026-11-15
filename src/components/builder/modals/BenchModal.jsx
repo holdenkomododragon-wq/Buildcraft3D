@@ -11,7 +11,7 @@ function Gauge({ value, max = 45000 }) {
   return (
     <svg viewBox="0 0 180 110" className="mx-auto w-48">
       <path d="M20 95 A70 70 0 0 1 160 95" fill="none" stroke="#27272f" strokeWidth="12" strokeLinecap="round" />
-      <path d="M20 95 A70 70 0 0 1 160 95" fill="none" stroke="#f97316" strokeWidth="12" strokeLinecap="round" strokeDasharray={`${c * frac} ${c}`} />
+      <path d="M20 95 A70 70 0 0 1 160 95" fill="none" stroke="#f1c40f" strokeWidth="12" strokeLinecap="round" strokeDasharray={`${c * frac} ${c}`} />
       <text x="90" y="80" textAnchor="middle" fill="#fff" fontSize="22" fontWeight="600">{value ? value.toLocaleString() : '--'}</text>
       <text x="90" y="98" textAnchor="middle" fill="#a1a1aa" fontSize="9">Estimated Time Spy score</text>
     </svg>
@@ -37,7 +37,7 @@ export default function BenchModal() {
           <p className="text-[10px] text-[#71717a]">Estimate from a reference model (weighted CPU/GPU). Not an official 3DMark result. Confidence: low.</p>
         </div>
         <div>
-          <div className="mb-3 flex flex-wrap gap-1">{RESOLUTIONS.map((x) => <button key={x.id} onClick={() => setRes(x.id)} className={`rounded-full px-3 py-1 text-[11px] ${res === x.id ? 'bg-[#ff2a85] text-white' : 'bg-[#18181e] text-[#a1a1aa] hover:text-white'}`}>{x.label}</button>)}</div>
+          <div className="mb-3 flex flex-wrap gap-1">{RESOLUTIONS.map((x) => <button key={x.id} onClick={() => setRes(x.id)} className={`rounded-full px-3 py-1 text-[11px] ${res === x.id ? 'bg-[#00cc66] text-white' : 'bg-[#18181e] text-[#a1a1aa] hover:text-white'}`}>{x.label}</button>)}</div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {b.games.map((g) => (
               <div key={g.name} className="overflow-hidden rounded-lg border border-[#27272f] bg-[#18181e]">

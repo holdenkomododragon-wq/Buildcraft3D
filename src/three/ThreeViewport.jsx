@@ -6,6 +6,7 @@ import { buildPC, IMPORTABLE } from './pcBuilders';
 import { loadImportedModels } from './models';
 import { buildSetup } from './setupBuilders';
 import { SHOWCASE } from '@/lib/showcaseRig';
+import { appParams } from '@/lib/app-params';
 
 const PC_KEYS = ['case', 'cpu', 'motherboard', 'gpu', 'ram', 'cooler', 'storage', 'psu', 'fan'];
 
@@ -15,6 +16,10 @@ const VIEWS = {
 };
 
 const baseRatio = () => (window.innerWidth > 1024 ? Math.min(Math.max(window.devicePixelRatio || 1, 1.5), 2) : Math.min(window.devicePixelRatio || 1, 2));
+const fourKRatio = (renderer, width, height) => {
+  const maxSize = renderer.capabilities.maxTextureSize;
+  return Math.min(3840 / width, maxSize / width, maxSize / height);
+};
 
 function disposeTree(o) {
   o.traverse((c) => {
@@ -131,12 +136,12 @@ const ThreeViewport = forwardRef(function ThreeViewport({ resolved, settings, mo
         else col.set(st.rgbMode === 'red' ? '#ff0000' : st.rgbColor);
         e.mat.emissive.copy(col);
         // the pulse stays inside the tone-mapped range, so the low point really dims out
-        e.mat.emissiveIntensity = st.rgbMode === 'breathing' ? 0.05 + 1.1 * (0.5 + 0.5 * Math.sin(t * 1.9)) : 1.5;
+        e.mat.emissiveIntensity = st.rgbMode === 'breathing' ? 0.04 + 0.52 * (0.5 + 0.5 * Math.sin(t * 1.9)) : 0.68;
         if (i === 0) main = col.clone();
       });
       if (sc.interior) {
         // the interior light breathes with the strips instead of staying at one level
-        sc.interior.intensity = st.rgbMode === 'off' || !main ? 0 : st.rgbMode === 'breathing' ? 0.16 + 0.5 * (0.5 + 0.5 * Math.sin(t * 1.9)) : 0.6;
+        sc.interior.intensity = st.rgbMode === 'off' || !main ? 0 : st.rgbMode === 'breathing' ? 0.04 + 0.16 * (0.5 + 0.5 * Math.sin(t * 1.9)) : 0.2;
         if (main) sc.interior.color.copy(main);
       }
       controls.update();
@@ -165,7 +170,13 @@ const ThreeViewport = forwardRef(function ThreeViewport({ resolved, settings, mo
     if (!sc.scene) return;
     [sc.pc, sc.setup].forEach((g) => { if (g) { sc.scene.remove(g); disposeTree(g); } });
     // nothing picked yet: draw the demo rig so the viewport is never empty
-    const view = PC_KEYS.some((k) => resolved[k]?.length) ? resolved : SHOWCASE;
+    const hasParts = PC_KEYS.some((k) => resolved[k]?.length);
+    const localPreview = !/^[a-f0-9]{24}$/i.test(appParams.appId || '');
+    const view = !hasParts
+      ? SHOWCASE
+      : localPreview
+        ? Object.fromEntries(PC_KEYS.map((key) => [key, resolved[key]?.length ? resolved[key] : SHOWCASE[key] || []]))
+        : resolved;
     const imported = IMPORTABLE.filter((k) => view[k]?.[0]?.part?.model_url);
     const pc = buildPC(view, settingsRef.current, { skip: new Set(imported) });
     const su = buildSetup(view, settingsRef.current);
@@ -180,6 +191,10 @@ const ThreeViewport = forwardRef(function ThreeViewport({ resolved, settings, mo
     sc.scene.add(pc.group, su.group);
     applyMode(sc, mode);
     if (pc.glass) pc.glass.visible = settingsRef.current.showGlass;
+    if (!sc.initialViewFitted) {
+      fitTo(sc, 1, 1.12);
+      sc.initialViewFitted = true;
+    }
 
     // real product models (Blender exports) take the place of the provisional ones
     let cancelled = false;
@@ -209,7 +224,7 @@ const ThreeViewport = forwardRef(function ThreeViewport({ resolved, settings, mo
     if (!sc.renderer || !el) return;
     const w = el.clientWidth || 1;
     const h = el.clientHeight || 1;
-    sc.renderer.setPixelRatio(hq ? Math.min(4, Math.max(2, 3840 / w)) : baseRatio());
+    sc.renderer.setPixelRatio(hq ? fourKRatio(sc.renderer, w, h) : baseRatio());
     sc.renderer.setSize(w, h, false);
   }, [hq]);
 
@@ -248,7 +263,7 @@ const ThreeViewport = forwardRef(function ThreeViewport({ resolved, settings, mo
       gr.visible = grid;
       if (transparent) { scene.background = null; scene.fog = null; renderer.setClearColor(0x000000, 0); }
       if (resolution === '4k') {
-        renderer.setPixelRatio(Math.min(4, Math.max(2, 3840 / w)));
+        renderer.setPixelRatio(fourKRatio(renderer, w, h));
         renderer.setSize(w, h, false);
       }
       renderer.render(scene, camera);
@@ -290,7 +305,9 @@ function fitTo(sc, variant, margin) {
   vis.forEach((g) => g.children.forEach((c) => { if (!c.userData.noFit) b.expandByObject(c); }));
   if (b.isEmpty()) return;
   const sphere = b.getBoundingSphere(new THREE.Sphere());
-  const dist = (sphere.radius / Math.sin((sc.camera.fov * Math.PI) / 360)) * margin;
+  const verticalHalfFov = (sc.camera.fov * Math.PI) / 360;
+  const horizontalHalfFov = Math.atan(Math.tan(verticalHalfFov) * sc.camera.aspect);
+  const dist = (sphere.radius / Math.sin(Math.min(verticalHalfFov, horizontalHalfFov))) * margin;
   const dir = variant === 2 ? new THREE.Vector3(1, 0.85, 1) : sc.camera.position.clone().sub(sc.controls.target);
   dir.normalize().multiplyScalar(dist);
   flyTo(sc, dir.add(sphere.center).toArray(), sphere.center.toArray(), true);

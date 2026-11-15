@@ -27,14 +27,14 @@ export default function Products() {
       <h1 className="text-[24px] font-semibold">Products</h1>
       <div className="relative mt-4 max-w-md"><Search className="absolute left-3 top-2.5 h-4 w-4 text-[#71717a]" /><Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search parts and brands" className="pl-9" /></div>
       <div className="mt-3 flex flex-wrap gap-1.5">
-        {[{ key: 'all', label: 'All' }, ...ALL_SLOTS].map((s) => <button key={s.key} onClick={() => setCat(s.key)} className={`rounded-full px-3 py-1 text-[12px] ${cat === s.key ? 'bg-[#ff2e8c] text-white' : 'bg-[#1c1c1c] text-[#a1a1aa] hover:text-white'}`}>{s.label}</button>)}
+        {[{ key: 'all', label: 'All' }, ...ALL_SLOTS].map((s) => <button key={s.key} onClick={() => setCat(s.key)} className={`rounded-full px-3 py-1 text-[12px] ${cat === s.key ? 'bg-[#00cc66] text-white' : 'bg-[#1c1c1c] text-[#a1a1aa] hover:text-white'}`}>{s.label}</button>)}
       </div>
       <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {list.map((p) => (
           <div key={p.id} className="flex flex-col rounded-lg border border-[#232323] bg-[#131313] p-3 transition-colors hover:border-[#41414c]">
             <div className="flex gap-3">{p.image_url ? <PartPhotoButton part={p} size="h-20 w-20" /> : <PartThumb part={p} size="h-14 w-14" />}<div className="min-w-0"><div className="text-[13px] font-medium leading-snug">{p.name}</div><div className="mt-0.5 text-[11px] text-[#71717a]">{p.brand} · {p.category}</div></div></div>
             <div className="mt-2 flex flex-wrap gap-1">{keySpecs(p).map(([k, v]) => <span key={k} className="rounded bg-[#1c1c1c] px-1.5 py-0.5 text-[10px] text-[#a1a1aa]">{k.replace(/_/g, ' ')}: {String(v)}</span>)}</div>
-            <div className="mt-3 flex items-center gap-2"><span className="tabular text-[14px] font-semibold text-[#22c55e]">{money(p.price)}</span><span className="rounded border border-[#34343d] px-1 text-[9px] text-[#71717a]">{p.image_url ? 'Product photo' : '3D approximate'}</span>
+            <div className="mt-3 flex items-center gap-2"><span className="tabular text-[14px] font-semibold text-[#00cc66]">{money(p.price)}</span><span className="rounded border border-[#34343d] px-1 text-[9px] text-[#71717a]">{p.image_url ? 'Product photo' : '3D approximate'}</span>
               <Button size="sm" variant="outline" className="ml-auto h-7 text-[11px]" onClick={() => setDetail(p)}>Details</Button>
               <Button size="sm" className="h-7 text-[11px]" onClick={() => add(p)}>Add to Build</Button></div>
           </div>

@@ -19,7 +19,7 @@ export default function ViewportControls({ viewRef, hq, onToggleHq }) {
               onClick={onToggleHq}
               aria-pressed={hq}
               aria-label="4K rendering"
-              className={`flex h-7 items-center rounded-md border px-1.5 text-[9px] font-bold tracking-[0.06em] backdrop-blur transition-colors ${hq ? 'border-[#ff2e8c] bg-[#ff2e8c]/15 text-white' : 'border-[#262626] bg-[#161616]/90 text-[#a1a1aa] hover:bg-[#222] hover:text-white'}`}
+              className={`flex h-7 items-center rounded-md border px-1.5 text-[9px] font-bold tracking-[0.06em] backdrop-blur transition-colors ${hq ? 'border-[#00cc66] bg-[#00cc66]/15 text-white' : 'border-[#262626] bg-[#161616]/90 text-[#a1a1aa] hover:bg-[#222] hover:text-white'}`}
             >
               4K
             </button>

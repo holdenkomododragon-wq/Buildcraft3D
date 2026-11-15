@@ -7,13 +7,16 @@ import { box, cyl } from '../kit';
 // and a short cable run leaving upward.
 export function pciePower(g, m, { x, y, z, count = 2, width = 22, height = 10, depth = 14, gap = 5 }) {
   const total = count * width + (count - 1) * gap;
+  const exits = [];
   for (let i = 0; i < count; i++) {
     const px = x - total / 2 + width / 2 + i * (width + gap);
     g.add(box(width, height, depth, m.socket, px, y, z));
     g.add(box(width - 5, 2.4, depth - 5, m.gold, px, y + height / 2 - 0.6, z));
     g.add(box(width - 2, 8, depth - 3, m.plug, px, y + height / 2 + 4.5, z));
     g.add(box(width - 9, 15, depth - 8, m.sleeve, px, y + height / 2 + 16, z));
+    exits.push({ x: px, y: y + height / 2 + 23.5, z });
   }
+  return exits;
 }
 
 // 24-pin ATX header on the board's front edge, with its plug and cable leaving it
@@ -41,13 +44,14 @@ export function fanHeader(g, m, { x, y, z }) {
 
 // PSU modular panel: sockets recessed in the housing, the top two cables plugged in
 export function modularPanel(g, m, { x, y, z }) {
+  const exits = [];
   [[16, -40], [16, -14], [-14, -40], [-14, -14]].forEach(([dy, dz], i) => {
     g.add(box(2, 12, 16, m.slot, x, y + dy, z + dz));
-    if (i < 2) {
-      g.add(box(7, 12, 15, m.plug, x + 3.5, y + dy, z + dz));
-      g.add(box(9, 11, 13, m.sleeve, x + 11, y + dy, z + dz));
-    }
+    g.add(box(7, 12, 15, m.plug, x + 3.5, y + dy, z + dz));
+    g.add(box(9, 11, 13, m.sleeve, x + 11, y + dy, z + dz));
+    exits.push({ x: x + 15.5, y: y + dy, z: z + dz, index: i });
   });
+  return exits;
 }
 
 // Rear I/O: USB stacks, ethernet, audio jacks and a USB-C set into the shield

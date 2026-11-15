@@ -16,7 +16,7 @@ export default function BuildFpsSection({ r }) {
     <section className="mt-6 rounded-xl border border-[#222] bg-[#121212]">
       <div className="flex flex-wrap items-center gap-2 border-b border-[#222] px-4 py-2.5">
         <h2 className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-[#71717a]">
-          <Gauge className="h-3.5 w-3.5 text-[#f97316]" />Estimated FPS
+          <Gauge className="h-3.5 w-3.5 text-[#f1c40f]" />Estimated FPS
         </h2>
         <span className="text-[10px] text-[#5f5f68]">{bench.gpuName || 'No GPU'} · {bench.cpuName || 'No CPU'}</span>
         <div className="ml-auto flex gap-0.5 rounded border border-[#242424] bg-[#0d0d0d] p-0.5">
@@ -36,7 +36,7 @@ export default function BuildFpsSection({ r }) {
             <div key={g.name} className="flex items-center gap-2 border-b border-[#1c1c1c] py-2 last:border-0 sm:last:border-0">
               <span className="w-[110px] shrink-0 truncate text-[11.5px] text-[#b3b3bb]" title={g.name}>{g.name}</span>
               <div className="h-2 flex-1 overflow-hidden rounded-sm bg-[#242424]">
-                <div className="h-full rounded-sm bg-gradient-to-r from-[#ff2e8c] to-[#f97316]" style={{ width: `${g.fps ? Math.max(2, (g.fps / max) * 100) : 0}%` }} />
+                <div className="h-full rounded-sm bg-gradient-to-r from-[#00cc66] to-[#f1c40f]" style={{ width: `${g.fps ? Math.max(2, (g.fps / max) * 100) : 0}%` }} />
               </div>
               <span className="tabular w-10 shrink-0 text-right text-[11.5px] font-semibold text-white">{g.fps ?? '—'}<span className="ml-0.5 text-[9px] font-normal text-[#71717a]">fps</span></span>
               <span className="w-8 shrink-0 text-[9px] uppercase tracking-wide text-[#5f5f68]">{g.limit || ''}</span>

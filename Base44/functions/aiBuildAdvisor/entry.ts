@@ -99,7 +99,7 @@ async function askXai(key, prompt) {
 }
 
 // model ids and per-model quotas shift on Google's side, so the first one that answers wins
-const GEMINI_MODELS = ['gemini-3.5-flash', 'gemini-3-flash-preview', 'gemini-3.1-flash-lite'];
+const GEMINI_MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-flash-latest'];
 
 async function callGemini(key, model, prompt) {
   const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
@@ -136,21 +136,21 @@ async function askGemini(key, prompt) {
   throw lastError || new Error('No Gemini model answered');
 }
 
-// Grok first, Gemini helping out whenever Grok is unavailable or rate limited
+// Gemini is the primary advisor; Grok is a fallback if Gemini is unavailable or rate limited.
 async function askAdvisor(keys, prompt) {
   const failures = [];
-  if (keys.xai) {
-    try {
-      return { data: await askXai(keys.xai, prompt), provider: 'grok' };
-    } catch (e) {
-      failures.push(`Grok: ${String((e && e.message) || e)}`);
-    }
-  }
   if (keys.gemini) {
     try {
       return { data: await askGemini(keys.gemini, prompt), provider: 'gemini' };
     } catch (e) {
       failures.push(`Gemini: ${String((e && e.message) || e)}`);
+    }
+  }
+  if (keys.xai) {
+    try {
+      return { data: await askXai(keys.xai, prompt), provider: 'grok' };
+    } catch (e) {
+      failures.push(`Grok: ${String((e && e.message) || e)}`);
     }
   }
   throw new Error(failures.join(' · ') || 'No AI key configured');
@@ -273,7 +273,7 @@ export default async function (req) {
     const readSecret = (name) => { try { return secrets.get(name); } catch (e) { return null; } };
     const keys = { xai: readSecret('XAI_API_KEY'), gemini: readSecret('GEMINI_API_KEY') };
     if (!keys.xai && !keys.gemini) {
-      return Response.json({ error: 'Add your Grok (xAI) API key on the dashboard Secrets page to power the advisor. Gemini is used as the backup voice if you add that too.' }, { status: 400 });
+      return Response.json({ error: 'Add GEMINI_API_KEY in Base44 Secrets to power the advisor. XAI_API_KEY is optional and used only as a fallback.' }, { status: 400 });
     }
 
     let answer = null;

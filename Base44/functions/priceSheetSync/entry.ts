@@ -6,18 +6,27 @@ const HEADERS = ['Part ID', 'Category', 'Part', 'Brand', 'Reference price', 'Bes
 
 const money = (n) => (Number.isFinite(Number(n)) ? Math.round(Number(n) * 100) / 100 : '');
 const esc = (s) => String(s ?? '').replace(/"/g, '""');
+const safeUrl = (value) => {
+  try {
+    const url = new URL(String(value || ''));
+    return url.protocol === 'https:' && !url.username && !url.password ? url.href : '';
+  } catch {
+    return '';
+  }
+};
 
 // only real product pages are ever written: a live listing's own page, or the brand's page for the part
 
 // a clickable cell that opens the page the price was read from
 function link(url, label) {
-  return url ? `=HYPERLINK("${esc(url)}","${esc(label)}")` : esc(label);
+  const target = safeUrl(url);
+  return target ? `=HYPERLINK("${esc(target)}","${esc(label)}")` : esc(label);
 }
 
 function offersOf(part) {
   const offers = Array.isArray(part.offers) ? part.offers : [];
   const find = (name) => offers.find((o) => String(o.supplier || '').toLowerCase().includes(name)) || null;
-  const sorted = offers.filter((o) => Number.isFinite(Number(o.price))).sort((a, b) => a.price - b.price);
+  const sorted = offers.filter((o) => Number.isFinite(Number(o.price)) && Number(o.price) > 0).sort((a, b) => a.price - b.price);
   return {
     best: sorted[0] || null,
     amazon: find('amazon'),
@@ -48,6 +57,7 @@ export default async function (req) {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me().catch((e) => (e.status === 401 ? null : Promise.reject(e)));
     if (!user) return Response.json({ error: 'Sign in to sync the price sheet.' }, { status: 401 });
+    if (user.role !== 'admin') return Response.json({ error: 'An administrator must sync the shared price sheet.' }, { status: 403 });
 
     let accessToken = null;
     try {
@@ -102,11 +112,16 @@ export default async function (req) {
     }
 
     const id = sheet.spreadsheet_id;
-    await sheets(accessToken, `/${id}/values/${SHEET_TAB}:clear`, { method: 'POST', body: JSON.stringify({}) });
-    await sheets(accessToken, `/${id}/values/${SHEET_TAB}!A1?valueInputOption=USER_ENTERED`, {
+    const writeRange = `${SHEET_TAB}!A1:L${rows.length}`;
+    await sheets(accessToken, `/${id}/values/${writeRange}?valueInputOption=USER_ENTERED`, {
       method: 'PUT',
-      body: JSON.stringify({ range: `${SHEET_TAB}!A1`, majorDimension: 'ROWS', values: rows }),
+      body: JSON.stringify({ range: writeRange, majorDimension: 'ROWS', values: rows }),
     });
+    const clearFrom = rows.length + 1;
+    if (clearFrom <= MAX_ROWS + 1) {
+      const staleRange = `${SHEET_TAB}!A${clearFrom}:L${MAX_ROWS + 1}`;
+      await sheets(accessToken, `/${id}/values/${staleRange}:clear`, { method: 'POST', body: JSON.stringify({}) });
+    }
 
     const record = await base44.asServiceRole.entities.PriceSheet.update(sheet.id, {
       rows: rows.length - 1,

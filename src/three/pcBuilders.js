@@ -33,6 +33,7 @@ function caseMats(ghost, casePart) {
     sleeve: plasticMat(0x14171c, { roughness: 0.9, clearcoat: 0.12 }),
     label: plasticMat(0xd6dae2, { roughness: 0.7, clearcoat: 0.2 }),
     tube: plasticMat(0x0f1216, { roughness: 0.86 }),
+    wireAccent: std(0x642b32, { roughness: 0.58, metalness: 0.08 }),
     fanFrame: plasticMat(0x1d2128, { roughness: 0.6 }),
     fanHub: plasticMat(0x13161b, { roughness: 0.55 }),
     fanCap: plasticMat(0x2a3039, { roughness: 0.5 }),
@@ -59,7 +60,7 @@ export const IMPORTABLE = ['case', 'cpu', 'motherboard', 'gpu', 'cooler', 'psu']
 export function buildPC(r, s, opts = {}) {
   const skip = opts.skip || new Set();
   const ctx = {
-    fans: [], rgb: [], rgbColor: s.rgbColor || '#ff2a85',
+    fans: [], rgb: [], rgbColor: s.rgbColor || '#00cc66',
     // user-picked 3D finishes; an empty string keeps the product's own colour
     colors: { gpu: '', cpu: '', ram: '', motherboard: '', ...(s.componentColors || {}) },
   };
@@ -88,11 +89,15 @@ export function buildPC(r, s, opts = {}) {
   const yBoard = Math.max(Y0 + 62, Math.min(Y0 + 116, Y0 + h - bh - 44));
   const board = { xRear, y0: yBoard, bw, bh, z: zBoard, kx, ky };
   const socket = { x: xRear + 90 * kx, y: yBoard + 175 * ky, z: zBoard };
+  const power = {
+    atx24: { x: xRear + 296 * kx, y: yBoard + 150 * ky, z: zBoard + 32.5 },
+    eps8: { x: xRear + 87 * kx, y: yBoard + 263 * ky, z: zBoard + 7.5 },
+  };
   const slotY = yBoard + 88 * ky;
   const gpuRearX = x0 + 18;
 
   const F = {
-    l, h, w, Y0, ghost, m, x0, x1, z0, z1, board, socket, gpuRearX, slotY,
+    l, h, w, Y0, ghost, m, x0, x1, z0, z1, board, socket, power, caseSpecs: cs, gpuRearX, slotY,
     shroudTop: Y0 + 108, shroudFront: x1 - 74, shroudBack: x0 + 190,
   };
 
@@ -113,13 +118,14 @@ export function buildPC(r, s, opts = {}) {
 
   if (mbItem) section('motherboard', (grp) => addMotherboard(grp, ctx, F, mbItem));
   if (r.ram?.length) addRam(g, ctx, F, r.ram);
-  if (r.gpu?.length) section('gpu', (grp) => addGpu(grp, ctx, F, first(r, 'gpu')));
+  let gpuPower = [];
+  if (r.gpu?.length) section('gpu', (grp) => { gpuPower = addGpu(grp, ctx, F, first(r, 'gpu')); });
   let occ = { front: false, top: false };
   if (r.cooler?.length) section('cooler', (grp) => { occ = addCooler(grp, ctx, F, r.cooler[0]); });
   if (r.storage?.length) addStorage(g, ctx, F, r.storage);
   let psu = null;
   if (r.psu?.length) section('psu', (grp) => { psu = addPsu(grp, ctx, F, first(r, 'psu')); });
-  addCables(g, ctx, F, psu);
+  addCables(g, ctx, F, psu, gpuPower);
 
   // rear exhaust fan above the card
   placeFan(g, 120, ctx, { rgb: false }, x0 + 24, Y0 + h - 104, 0, 'x');

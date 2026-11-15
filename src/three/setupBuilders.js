@@ -6,7 +6,7 @@ const std = (color, o = {}) => new THREE.MeshStandardMaterial({ color, metalness
 const DESK_Y = 740;
 
 export function buildSetup(r, s) {
-  const ctx = { rgb: [], rgbColor: s.rgbColor || '#ff2a85' };
+  const ctx = { rgb: [], rgbColor: s.rgbColor || '#00cc66' };
   const m = {
     ghost: std(0x7c889a, { transparent: true, opacity: 0.45 }),
     dark: std(0x343a44),

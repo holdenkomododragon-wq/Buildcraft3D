@@ -1,4 +1,4 @@
-import { box, cyl, rgbMat, metalMat, plasticMat } from '../kit';
+import { box, cyl, ring, rgbMat, metalMat, plasticMat } from '../kit';
 import { atx24, eps8, fanHeader, ioStack } from './hardware';
 
 // Board layout in ATX units (305 x 244 from the rear edge / bottom), scaled to the
@@ -40,6 +40,18 @@ export function addMotherboard(g, ctx, F, item) {
   g.add(box(40, 40, 2.4, ihs, sx, sy, z + 6));
   for (let i = 0; i < 6; i++) g.add(cyl(2.6, 6, m.cap, sx - 40 + i * 9, sy - 32, z + 3, 'z', 2.6, 10));
 
+  // Dense capacitor banks and power stages make the exposed board area read as hardware.
+  [0, 1, 2, 3, 4].forEach((i) => {
+    const x = X(57 + i * 9);
+    g.add(cyl(3.1, 7, m.cap, x, Y(213), z + 5, 'z', 3.1, 14));
+    g.add(cyl(2.2, 2, m.gold, x, Y(213), z + 9.5, 'z', 2.2, 12));
+  });
+  [0, 1, 2, 3, 4, 5].forEach((i) => {
+    const x = X(78 + i * 10);
+    g.add(box(W(6), S(5), 3, m.darkMetal, x, Y(194), z + 3));
+    g.add(box(W(3), S(2), 1.2, m.metal, x, Y(194), z + 5.1));
+  });
+
   // DIMM slots (vertical, left of the CPU toward the front edge)
   for (let i = 0; i < 4; i++) {
     const x = X(132 + i * 8.7);
@@ -59,6 +71,27 @@ export function addMotherboard(g, ctx, F, item) {
   g.add(box(W(30), S(6), 2, m.metal, X(212), Y(56), z + 14.5));
   g.add(box(W(84), S(24), 7, m.metal, X(205), Y(122), z + 4));
   for (let i = 0; i < 6; i++) g.add(box(W(3), S(20), 8, m.darkMetal, X(172 + i * 12), Y(122), z + 4.5));
+  [0, 1, 2].forEach((i) => {
+    const x = X(170 + i * 84);
+    const y = Y(122);
+    g.add(cyl(2.2, 1.8, m.gold, x, y, z + 8.8, 'z', 2.2, 12));
+    g.add(box(W(18), S(2.4), 2, m.darkMetal, x + W(25), y, z + 2.5));
+  });
+
+  // Surface-mount component dots in grouped rows around the socket, slots and lower edge.
+  const componentRows = [
+    { x: 54, y: 170, count: 8, step: 7 },
+    { x: 72, y: 66, count: 9, step: 8 },
+    { x: 192, y: 34, count: 8, step: 9 },
+    { x: 270, y: 82, count: 5, step: 7 },
+  ];
+  componentRows.forEach(({ x, y, count, step }) => {
+    for (let i = 0; i < count; i++) {
+      const px = X(x + i * step);
+      const py = Y(y + (i % 2) * 4);
+      g.add(cyl(1.35, 1.3, i % 3 === 0 ? m.gold : m.cap, px, py, z + 1.2, 'z', 1.35, 10));
+    }
+  });
 
   // rear I/O ports sitting in the shield cutout
   ioStack(g, m, { x: xRear - 1, y: Y(165), z: z + 15 });
@@ -77,6 +110,12 @@ export function addMotherboard(g, ctx, F, item) {
     g.add(box(W(16), S(9), 13, m.socket, X(236), Y(32 - i * 11), z + 6));
     g.add(box(W(12), S(3), 3, m.gold, X(236), Y(32 - i * 11), z + 12));
   }
+
+  // Small board standoffs and plated mounting holes along the available corners.
+  [[12, 12], [293, 12], [12, 232], [293, 232], [152, 12], [152, 232]].forEach(([x, y]) => {
+    g.add(ring(3.2, 0.8, m.metal, X(x), Y(y), z + 1.2, 'z', 16));
+    g.add(cyl(1.2, 1.4, m.slot, X(x), Y(y), z + 1.1, 'z', 1.2, 12));
+  });
 
   // CMOS battery + RGB strip along the front edge
   g.add(cyl(10, 4, m.metal, X(250), Y(24), z + 2, 'z', 10, 20));

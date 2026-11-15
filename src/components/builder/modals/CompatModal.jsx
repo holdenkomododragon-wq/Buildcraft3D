@@ -2,7 +2,7 @@ import PartThumb from '@/components/parts/PartThumb';
 import { useBuilder } from '@/hooks/useBuilder';
 import { SLOT_LABEL } from '@/lib/catalogMeta';
 
-const C = { compatible: ['#38bdf8', 'Compatible'], warning: ['#f59e0b', 'Warning'], incompatible: ['#ef4444', 'Incompatible'], unknown: ['#94a3b8', 'Unknown'] };
+const C = { compatible: ['#38bdf8', 'Compatible'], warning: ['#f1c40f', 'Warning'], incompatible: ['#ef4444', 'Incompatible'], unknown: ['#94a3b8', 'Unknown'] };
 
 export default function CompatModal() {
   const { summary, resolved } = useBuilder();

@@ -8,5 +8,6 @@ export const base44 = createClient({
   token,
   functionsVersion,
   serverUrl: '',
-  appBaseUrl
+  appBaseUrl,
+  analytics: { enabled: /^[a-f0-9]{24}$/i.test(appId || '') },
 });

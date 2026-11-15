@@ -17,7 +17,7 @@ export default function MetricCompare({ left, right }) {
         const a = r.get(left);
         const b = r.get(right);
         const delta = a != null && b != null ? b - a : null;
-        const color = delta == null || delta === 0 ? '#71717a' : (r.better === 'lower' ? delta < 0 : delta > 0) ? '#22c55e' : '#ef4444';
+        const color = delta == null || delta === 0 ? '#71717a' : (r.better === 'lower' ? delta < 0 : delta > 0) ? '#00cc66' : '#ef4444';
         const sign = delta == null || delta === 0 ? '' : delta > 0 ? '+' : '−';
         return (
           <div key={r.label} className="grid grid-cols-[1fr_104px_104px_84px] items-center gap-2 border-b border-[#1c1c1c] px-3 py-1.5 text-[12px] last:border-0">

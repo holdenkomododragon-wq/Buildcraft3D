@@ -26,7 +26,7 @@ export default function AdvisorRecommendation({ build, total, notes, fit, fps, o
       </ul>
       {fit ? (
         fit.overall === 'compatible' ? (
-          <p className="flex items-start gap-1.5 border-t border-[#262626] px-3 py-2 text-[11px] leading-snug text-[#4ade80]">
+          <p className="flex items-start gap-1.5 border-t border-[#262626] px-3 py-2 text-[11px] leading-snug text-[#00cc66]">
             <ShieldCheck className="mt-px h-3.5 w-3.5 shrink-0" />
             Every fit check passes — socket, memory, clearance and power all line up.
           </p>
@@ -46,14 +46,14 @@ export default function AdvisorRecommendation({ build, total, notes, fit, fps, o
       {notes && notes.length ? (
         <ul className="space-y-1 border-t border-[#262626] px-3 py-2">
           {notes.map((n, i) => (
-            <li key={i} className="flex gap-1.5 text-[11px] leading-snug text-[#8b8b94]"><span className="text-[#ff2e8c]">•</span><span>{n}</span></li>
+            <li key={i} className="flex gap-1.5 text-[11px] leading-snug text-[#8b8b94]"><span className="text-[#00cc66]">•</span><span>{n}</span></li>
           ))}
         </ul>
       ) : null}
       {canApply ? (
         <div className="flex items-center justify-between gap-3 border-t border-[#262626] bg-[#121212] px-3 py-2">
           <p className="text-[10px] leading-snug text-[#71717a]">Nothing changes until you apply it.</p>
-          <Button size="sm" onClick={() => onApply(build)} className="shrink-0 gap-1.5 bg-[#ff2e8c] text-white hover:opacity-90">
+          <Button size="sm" onClick={() => onApply(build)} className="shrink-0 gap-1.5 bg-[#00cc66] text-white hover:opacity-90">
             <Check className="h-3.5 w-3.5" />Apply to my build
           </Button>
         </div>

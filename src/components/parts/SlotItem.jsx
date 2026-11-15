@@ -6,7 +6,7 @@ import { useBuilder } from '@/hooks/useBuilder';
 import { money, productUrl } from '@/lib/catalogMeta';
 import { bestOffer } from '@/lib/prices';
 
-const DOT = { compatible: '#3b82f6', warning: '#f59e0b', incompatible: '#ef4444', unknown: '#94a3b8' };
+const DOT = { compatible: '#3b82f6', warning: '#f1c40f', incompatible: '#ef4444', unknown: '#94a3b8' };
 
 export default function SlotItem({ slot, idx, item, onSwap }) {
   const { removePart, updateItem, summary, build } = useBuilder();
@@ -22,7 +22,7 @@ export default function SlotItem({ slot, idx, item, onSwap }) {
         <button
           onClick={onSwap}
           title="Swap part"
-          className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#ff2e8c] text-white shadow-[0_2px_6px_rgba(0,0,0,0.5)] transition-transform hover:scale-105"
+          className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#00cc66] text-black shadow-[0_2px_6px_rgba(0,0,0,0.5)] transition-transform hover:scale-105"
         >
           <ArrowLeftRight className="h-2.5 w-2.5" />
         </button>
@@ -30,10 +30,10 @@ export default function SlotItem({ slot, idx, item, onSwap }) {
       <div className="min-w-0 flex-1">
         <div className="text-[12.5px] font-medium leading-snug text-white">{part.name}</div>
         <div className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-1">
-          <span className="tabular text-[12px] font-semibold text-[#22c55e]">{money(part.price * qty)}</span>
+          <span className="tabular text-[12px] font-semibold text-[#00cc66]">{money(part.price == null ? null : part.price * qty)}</span>
           {qty > 1 && <span className="text-[10px] text-[#71717a]">{qty} x {money(part.price)}</span>}
           {build.settings.showLivePrices !== false && bestOffer(part) && (
-            <span title={`Cheapest live listing: ${bestOffer(part).supplier}`} className="rounded bg-[#22c55e]/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wide text-[#4ade80]">{bestOffer(part).supplier}</span>
+            <span title={`Cheapest live listing: ${bestOffer(part).supplier}`} className="rounded bg-[#00cc66]/10 px-1 py-px text-[9px] font-semibold uppercase tracking-wide text-[#00cc66]">{bestOffer(part).supplier}</span>
           )}
           <span title={`Compatibility: ${st}`} className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: DOT[st] }} />
           {(slot === 'ram' || slot === 'fan' || slot === 'storage' || slot === 'monitor' || slot === 'lamp' || slot === 'speaker') && (
@@ -49,7 +49,7 @@ export default function SlotItem({ slot, idx, item, onSwap }) {
                 <button title="Radiator mount" className="rounded border border-[#242424] p-1 text-[#8b8b94] hover:text-white"><Settings2 className="h-2.5 w-2.5" /></button>
               </PopoverTrigger>
               <PopoverContent className="w-44 border-[#242424] bg-[#141414] p-2">
-                {['front', 'top'].map((m) => <button key={m} onClick={() => updateItem(slot, idx, { config: { ...item.config, mount: m } })} className={`block w-full rounded px-2 py-1.5 text-left text-[12px] capitalize ${mount === m ? 'bg-[#ff2e8c]/15 text-white' : 'text-[#a1a1aa] hover:bg-[#1c1c1c]'}`}>{m} radiator mount</button>)}
+                {['front', 'top'].map((m) => <button key={m} onClick={() => updateItem(slot, idx, { config: { ...item.config, mount: m } })} className={`block w-full rounded px-2 py-1.5 text-left text-[12px] capitalize ${mount === m ? 'bg-[#00cc66]/15 text-white' : 'text-[#a1a1aa] hover:bg-[#1c1c1c]'}`}>{m} radiator mount</button>)}
               </PopoverContent>
             </Popover>
           )}

@@ -20,7 +20,7 @@ export default function RenderModal({ viewRef }) {
       {url && (
         <div className="space-y-2">
           <img src={url} alt="Render preview" className="w-full rounded-lg border border-[#27272f]" style={{ background: transparent ? 'repeating-conic-gradient(#222 0% 25%, #111 0% 50%) 50% / 16px 16px' : undefined }} />
-          <a href={url} download={`${build.title.replace(/\s+/g, '-')}${fourK ? '-4k' : ''}.png`} className="flex items-center justify-center gap-2 rounded-md border border-[#34343d] py-2 text-[12px] hover:border-[#ff2a85]"><Download className="h-4 w-4" />Download PNG</a>
+          <a href={url} download={`${build.title.replace(/\s+/g, '-')}${fourK ? '-4k' : ''}.png`} className="flex items-center justify-center gap-2 rounded-md border border-[#34343d] py-2 text-[12px] hover:border-[#00cc66]"><Download className="h-4 w-4" />Download PNG</a>
         </div>
       )}
     </div>

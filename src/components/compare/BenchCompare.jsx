@@ -15,7 +15,7 @@ export default function BenchCompare({ left, right }) {
             <span className="truncate text-[#a1a1aa]">{g.name}</span>
             <span className="tabular text-right text-white">{a == null ? '—' : `${a} fps`}</span>
             <span className="tabular text-right text-white">{b == null ? '—' : `${b} fps`}</span>
-            <span className="tabular text-right font-semibold" style={{ color: delta == null || delta === 0 ? '#71717a' : delta > 0 ? '#22c55e' : '#ef4444' }}>
+            <span className="tabular text-right font-semibold" style={{ color: delta == null || delta === 0 ? '#71717a' : delta > 0 ? '#00cc66' : '#ef4444' }}>
               {delta == null || delta === 0 ? '—' : `${delta > 0 ? '+' : '−'}${Math.abs(delta)}`}
             </span>
           </div>

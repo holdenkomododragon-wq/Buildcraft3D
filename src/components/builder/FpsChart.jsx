@@ -17,7 +17,7 @@ export default function FpsChart() {
   return (
     <div className="w-[212px] rounded-xl border border-[#262626] bg-[#141414]/95 p-2.5 shadow-[0_10px_30px_rgba(0,0,0,0.45)] backdrop-blur">
       <div className="flex items-center gap-1.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-[#8b8b94]">
-        <Gauge className="h-3 w-3 text-[#f97316]" />Predicted FPS
+        <Gauge className="h-3 w-3 text-[#f1c40f]" />Predicted FPS
         <button onClick={() => setSettings({ showFps: false })} title="Hide predicted FPS" aria-label="Hide predicted FPS" className="ml-auto rounded p-0.5 text-[#71717a] hover:text-white"><EyeOff className="h-3 w-3" /></button>
       </div>
       <div className="mt-1.5 flex gap-0.5 rounded border border-[#242424] bg-[#101010] p-0.5">
@@ -35,7 +35,7 @@ export default function FpsChart() {
             <div key={g.name} className="flex items-center gap-1.5" title={g.limit ? `${g.name} — ${g.limit}-limited` : g.name}>
               <span className="w-[74px] shrink-0 truncate text-[9px] text-[#a1a1aa]">{g.name}</span>
               <div className="h-[7px] flex-1 overflow-hidden rounded-sm bg-[#242424]">
-                <div className="h-full rounded-sm bg-gradient-to-r from-[#ff2e8c] to-[#f97316] transition-[width] duration-300" style={{ width: `${g.fps ? Math.max(3, (g.fps / max) * 100) : 0}%` }} />
+                <div className="h-full rounded-sm bg-gradient-to-r from-[#00cc66] to-[#f1c40f] transition-[width] duration-300" style={{ width: `${g.fps ? Math.max(3, (g.fps / max) * 100) : 0}%` }} />
               </div>
               <span className="tabular w-7 shrink-0 text-right text-[9px] font-semibold text-[#e5e7eb]">{g.fps ?? '—'}</span>
             </div>

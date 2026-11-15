@@ -22,7 +22,7 @@ export default function ShareRow({ url, note }) {
     copy();
   };
 
-  const btn = 'flex items-center gap-1.5 rounded-md bg-[#ff2e8c] px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90';
+  const btn = 'flex items-center gap-1.5 rounded-md bg-[#00cc66] px-3 py-2 text-[12px] font-semibold text-white transition-opacity hover:opacity-90';
   const ghost = 'flex items-center gap-1.5 rounded-md border border-[#2e2e2e] bg-[#161616] px-3 py-2 text-[12px] font-medium text-[#d4d4d8] transition-colors hover:border-[#3d3d3d] hover:text-white';
 
   return (

@@ -120,10 +120,10 @@ export default function AiAdvisor({ open, onOpenChange }) {
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-md overflow-hidden rounded-xl border-[#262626] bg-[#101010] p-0">
           <div className="px-6 py-8 text-center">
-            <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-[#ff2e8c]/15"><Sparkles className="h-5 w-5 text-[#ff2e8c]" /></span>
+            <span className="mx-auto flex h-10 w-10 items-center justify-center rounded-lg bg-[#00cc66]/15"><Sparkles className="h-5 w-5 text-[#00cc66]" /></span>
             <DialogTitle className="mt-3 text-[15px] font-semibold text-white">Sign in to use the AI advisor</DialogTitle>
             <p className="mt-2 text-[12.5px] leading-relaxed text-[#8b8b94]">The 3D builder is free without an account. The advisor needs one so its daily request limit can be tracked against you and the API credits stay under control.</p>
-            <Button onClick={() => { window.location.href = `/login?returnTo=${encodeURIComponent('/')}`; }} className="mt-4 h-9 w-full bg-[#ff2e8c] text-white hover:opacity-90">Sign in to continue</Button>
+            <Button onClick={() => { window.location.href = `/login?returnTo=${encodeURIComponent('/')}`; }} className="mt-4 h-9 w-full bg-[#00cc66] text-white hover:opacity-90">Sign in to continue</Button>
             <button type="button" onClick={() => onOpenChange(false)} className="mt-2 w-full rounded-md border border-[#262626] py-2 text-[12px] font-medium text-[#b3b3bb] transition-colors hover:border-[#3a3a3a] hover:text-white">Go back to the builder</button>
           </div>
         </DialogContent>
@@ -135,7 +135,7 @@ export default function AiAdvisor({ open, onOpenChange }) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex h-[min(88vh,780px)] w-full max-w-2xl flex-col gap-0 overflow-hidden rounded-xl border-[#262626] bg-[#101010] p-0">
         <div className="flex items-center gap-2 border-b border-[#1f1f1f] px-4 py-3 pr-12">
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#ff2e8c]/15"><Sparkles className="h-4 w-4 text-[#ff2e8c]" /></span>
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#00cc66]/15"><Sparkles className="h-4 w-4 text-[#00cc66]" /></span>
           <div className="min-w-0">
             <DialogTitle className="text-[14px] font-semibold text-white">Build advisor</DialogTitle>
             <p className="truncate text-[11px] text-[#71717a]">Answer a couple of questions and I'll design the build around what you actually do.</p>
@@ -163,14 +163,14 @@ export default function AiAdvisor({ open, onOpenChange }) {
         <div className="border-t border-[#1f1f1f] bg-[#0d0d0d] px-3 py-2.5">
           <div className="mb-1.5 flex items-center justify-between text-[10px]">
             <span className="flex items-center gap-1 text-[#71717a]">
-              <Gauge className="h-3 w-3 text-[#ff2e8c]" />
+              <Gauge className="h-3 w-3 text-[#00cc66]" />
               {left == null ? 'Checking your daily allowance…' : `${left} of ${quota.limit} advisor requests left today`}
             </span>
             {left === 0 && <span className="text-[#f87171]">Resets tomorrow</span>}
           </div>
           <form onSubmit={(e) => { e.preventDefault(); ask(input); }} className="flex items-center gap-2">
             <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder={left === 0 ? 'Daily limit reached' : 'Budget, games, software, screen…'} disabled={left === 0} className="h-9 border-[#262626] bg-[#141414] text-[12px] text-white placeholder:text-[#5f5f68]" />
-            <Button type="submit" size="sm" disabled={loading || !input.trim() || left === 0} className="h-9 w-9 shrink-0 bg-[#ff2e8c] p-0 text-white hover:opacity-90">
+            <Button type="submit" size="sm" disabled={loading || !input.trim() || left === 0} className="h-9 w-9 shrink-0 bg-[#00cc66] p-0 text-white hover:opacity-90">
               {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
             </Button>
           </form>

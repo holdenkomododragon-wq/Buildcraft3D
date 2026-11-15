@@ -1,4 +1,4 @@
-import { box, ring, tube, rgbMat, metalMat } from '../kit';
+import { box, ring, tube, rgbMat, metalMat, placeFan } from '../kit';
 import { partHex, accentHex, shade } from '../finish';
 import { modularPanel } from './hardware';
 
@@ -68,22 +68,50 @@ export function addPsu(g, ctx, F, item) {
   const shellDark = metalMat(shade(partHex(item.part, 0x23272e), 0.72), { roughness: 0.52 });
   g.add(box(pl, 86, 150, shell, px, py, 0));
   g.add(box(3, 62, 122, shellDark, px + pl / 2, py, 0));
-  modularPanel(g, m, { x: px + pl / 2 + 1.5, y: py, z: 0 });
-  g.add(box(pl * 0.58, 30, 2, m.label, px, py + 12, 75.5));
-  g.add(ring(30, 1.6, m.darkMetal, px, py - 8, 75.8));
+  const modularX = px + pl / 2 + 1.5;
+  const outputs = modularPanel(g, m, { x: modularX, y: py, z: 0 });
+  g.add(box(pl * 0.58, 16, 2, m.label, px, py + 32, 75.5));
+  placeFan(g, 108, ctx, { frame: false, depth: 14, frameColor: m.darkMetal, bladeColor: m.blade }, px, py - 22, 83, 'z');
+  g.add(ring(55, 1.4, m.metal, px, py - 22, 91));
+  g.add(tube([[px - 49, py - 71, 91.5], [px + 49, py + 27, 91.5]], m.metal, 1.1));
+  g.add(tube([[px - 49, py + 27, 91.5], [px + 49, py - 71, 91.5]], m.metal, 1.1));
+  [[-49, -49], [-49, 49], [49, -49], [49, 49]].forEach(([dx, dy]) =>
+    g.add(ring(3, 1, m.metal, px + dx, py - 22 + dy, 91.5, 'z', 12)));
   g.add(box(2, 26, 34, m.darkMetal, x0 + 19, py + 14, 38));
   g.add(box(2, 13, 13, m.metal, x0 + 19, py - 26, 44));
-  return { x: px, y: py + 43, z: 6, front: px + pl / 2 };
+  return { x: px, y: py, z: 0, outputs, front: modularX };
 }
 
-// ── sleeved cables from the basement to the board and the card ───────────────
-export function addCables(g, ctx, F, psu) {
+// ── sleeved cables from actual PSU outputs to the component plug exits ───────
+export function addCables(g, ctx, F, psu, gpuPower = []) {
   const m = ctx.m;
-  const { board, socket, gpuRearX, slotY } = F;
+  const { board, power } = F;
   if (!psu) return;
-  const pin = { x: board.xRear + 296 * board.kx, y: board.y0 + 150 * board.ky, z: board.z + 8 };
-  g.add(tube([[psu.front - 6, psu.y, 22], [psu.front + 70, psu.y + 26, 4], [pin.x + 26, pin.y - 46, -46], [pin.x, pin.y, pin.z]], m.sleeve, 4));
-  const gpuPin = { x: gpuRearX + 10 + 60, y: slotY + 9, z: board.z + 60 };
-  g.add(tube([[psu.front - 10, psu.y, 46], [psu.front + 60, psu.y + 40, 44], [gpuPin.x + 40, gpuPin.y + 62, 34], [gpuPin.x, gpuPin.y + 4, gpuPin.z]], m.sleeve, 5));
-  g.add(tube([[psu.front - 14, psu.y - 20, 52], [psu.front + 50, psu.y - 10, 56], [socket.x - 60, socket.y - 30, socket.z + 20]], m.sleeve, 3.5));
+  const route = (source, target, radius) => {
+    const trayZ = Math.min(source.z, target.z, board.z - 18);
+    const path = [
+      [source.x, source.y, source.z],
+      [source.x + 28, source.y + 12, trayZ],
+      [target.x - 26, target.y + 24, trayZ],
+      [target.x, target.y, target.z],
+    ];
+    const strandCount = radius >= 4 ? 12 : 8;
+    const wireMaterials = [m.sleeve, m.darkMetal, m.sleeve, m.wireAccent];
+    for (let i = 0; i < strandCount; i++) {
+      const angle = (i / strandCount) * Math.PI * 2;
+      const offsetX = Math.cos(angle) * radius * 0.64;
+      const offsetZ = Math.sin(angle) * radius * 0.64;
+      const points = path.map(([x, y, z], index) => {
+        const taper = index === 0 || index === path.length - 1 ? 0.18 : 1;
+        return [x + offsetX * taper, y, z + offsetZ * taper];
+      });
+      g.add(tube(points, wireMaterials[i % wireMaterials.length], 0.72, 22));
+    }
+  };
+  if (power?.atx24 && psu.outputs[0]) route(psu.outputs[0], power.atx24, 4);
+  if (power?.eps8 && psu.outputs[1]) route(psu.outputs[1], power.eps8, 3.5);
+  gpuPower.forEach((target, i) => {
+    const source = psu.outputs[2 + Math.min(i, 1)];
+    if (source) route(source, target, 3.5);
+  });
 }

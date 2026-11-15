@@ -7,7 +7,7 @@ import { MfaScreen } from "@/components/MfaParts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
+import { LogIn, Mail, Lock, Loader2, ShieldCheck } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
 import { safeReturnTo } from "@/lib/authReturnTo";
@@ -45,6 +45,13 @@ export default function Login() {
     catch (err) { setError(err.message || 'Unable to sign in with Google'); }
   };
 
+  const handleSSOJet = async () => {
+    setError("");
+    setLoading(true);
+    try { await signInWithProvider("sso", returnTo); }
+    catch (err) { setError(err.message || 'Unable to sign in with SSOJet'); setLoading(false); }
+  };
+
   // The second sign-in step (authenticator app or text message) replaces the whole page.
   if (mfaChallenge) return <MfaScreen><MfaFlow challenge={mfaChallenge} returnTo={returnTo} /></MfaScreen>;
 
@@ -72,6 +79,16 @@ export default function Login() {
       >
         <GoogleIcon className="w-5 h-5 mr-2" />
         Continue with Google
+      </Button>
+
+      <Button
+        variant="outline"
+        className="w-full h-12 text-sm font-medium -mt-2 mb-6"
+        onClick={handleSSOJet}
+        disabled={loading}
+      >
+        {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ShieldCheck className="w-4 h-4 mr-2" />}
+        Continue with SSOJet
       </Button>
 
       <div className="relative mb-6">

@@ -1,11 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { appParams } from '@/lib/app-params';
 import { useToast } from '@/components/ui/use-toast';
 import { ALL_SLOTS, DEFAULT_SETTINGS, SLOT_LABEL } from '@/lib/catalogMeta';
 import { calcCompat, resolveItems, summarize } from '@/lib/buildCalc';
 import { coolerFitsCase, gpuFitsCase } from '@/lib/caseFit';
 import { needsPriceRefresh } from '@/lib/prices';
+import { LOCAL_PREVIEW_CATALOG } from '@/lib/localPreviewCatalog';
 
 const Ctx = createContext(null);
 export const useBuilder = () => useContext(Ctx);
@@ -16,7 +18,11 @@ const fresh = () => ({ id: null, title: 'New Build', description: '', visibility
 function loadDraft() {
   try {
     const d = JSON.parse(localStorage.getItem(DRAFT_KEY));
-    if (d && d.items) return { ...fresh(), ...d, settings: { ...DEFAULT_SETTINGS, ...(d.settings || {}) } };
+    if (d && d.items) {
+      const settings = { ...DEFAULT_SETTINGS, ...(d.settings || {}) };
+      if (['#ff2a85', '#ff2e8c'].includes(String(settings.rgbColor).toLowerCase())) settings.rgbColor = DEFAULT_SETTINGS.rgbColor;
+      return { ...fresh(), ...d, settings };
+    }
   } catch (e) { /* ignore corrupt draft */ }
   return fresh();
 }
@@ -39,11 +45,21 @@ export function BuilderProvider({ children }) {
   const savedJson = useRef(null);
   const autoPriced = useRef(false);
   const buildRef = useRef(build);
+  const localPreview = !/^[a-f0-9]{24}$/i.test(appParams.appId || '');
   buildRef.current = build;
 
-  useEffect(() => { base44.auth.me().then(setUser).catch(() => setUser(null)); }, []);
+  useEffect(() => {
+    if (localPreview) return;
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, [localPreview]);
 
-  const { data: parts = [], isLoading: catalogLoading } = useQuery({ queryKey: ['parts', 'product-photos'], queryFn: () => base44.entities.Part.list('-created_date', 500), staleTime: 300000 });
+  const { data: parts = [], isLoading: catalogLoading } = useQuery({
+    queryKey: ['parts', 'product-photos'],
+    queryFn: () => base44.entities.Part.list('-created_date', 500),
+    enabled: !localPreview,
+    initialData: localPreview ? LOCAL_PREVIEW_CATALOG : undefined,
+    staleTime: 300000,
+  });
   const byId = useMemo(() => Object.fromEntries(parts.map((p) => [p.id, p])), [parts]);
 
   // nothing in the build is ever rewritten behind the user's back: a selection stays exactly
@@ -165,8 +181,13 @@ export function BuilderProvider({ children }) {
       if (updated.length) {
         const patched = Object.fromEntries(updated.map((u) => [u.id, u]));
         qc.setQueryData(['parts', 'product-photos'], (old) => (Array.isArray(old) ? old.map((p) => (patched[p.id] ? { ...p, ...patched[p.id] } : p)) : old));
-        // the database is the source of truth: every re-price is mirrored into the shared sheet
-        base44.functions.invoke('priceSheetSync', {}).catch(() => null);
+        // Keep the shared sheet in step with successfully refreshed catalog prices.
+        try {
+          await base44.functions.invoke('priceSheetSync', {});
+        } catch (syncError) {
+          const message = syncError?.response?.data?.error || 'Connect Google Sheets and retry from Settings.';
+          toast({ title: 'Prices updated; sheet sync failed', description: message, variant: 'destructive' });
+        }
       }
       return data || {};
     } catch (e) {
@@ -186,7 +207,7 @@ export function BuilderProvider({ children }) {
   }, [user, catalogLoading, parts, refreshPrices]);
 
   const value = {
-    build, patch, setSettings, mode, setMode, user, parts, byId, catalogLoading, summary, resolved: summary.r, dirty, saving, save, signOut, focusPartId, setFocusPartId, refreshPrices, priceSyncing,
+    build, patch, setSettings, mode, setMode, user, parts, byId, catalogLoading, localPreview, summary, resolved: summary.r, dirty, saving, save, signOut, focusPartId, setFocusPartId, refreshPrices, priceSyncing,
     addPart, removePart, updateItem, newBuild, requestNewBuild, newPrompt, setNewPrompt, loadBuild, openBuild, cloneBuild, cloneFromRecord, SLOT_LABEL,
   };
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

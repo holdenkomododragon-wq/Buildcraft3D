@@ -1,0 +1,150 @@
+{
+  "name": "Part",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Full product name"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "case",
+        "cpu",
+        "motherboard",
+        "gpu",
+        "ram",
+        "cooler",
+        "storage",
+        "psu",
+        "fan",
+        "desk",
+        "monitor",
+        "keyboard",
+        "mouse",
+        "headphones",
+        "chair",
+        "lamp",
+        "speaker",
+        "microphone",
+        "webcam",
+        "mousepad"
+      ]
+    },
+    "brand": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price the app charges for this part: the cheapest live retailer price once prices have been fetched, otherwise the catalog reference price"
+    },
+    "reference_price": {
+      "type": "number",
+      "description": "Original catalog reference price, kept so live prices can be sanity checked against it"
+    },
+    "price_source": {
+      "type": "string",
+      "description": "Where the current price came from",
+      "default": "Reference price (not live)"
+    },
+    "price_updated_at": {
+      "type": "string",
+      "description": "When the live retailer prices were last fetched"
+    },
+    "offers": {
+      "type": "array",
+      "description": "Live per-supplier prices, cheapest first (Amazon, Newegg, Micro Center)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "supplier": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "url": {
+            "type": "string"
+          },
+          "in_stock": {
+            "type": "boolean"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "description": {
+      "type": "string"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Real product photograph"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Verified alternate product photographs; these are not rotatable 3D models"
+    },
+    "product_url": {
+      "type": "string",
+      "description": "Source product page for the images"
+    },
+    "image_note": {
+      "type": "string",
+      "description": "Variant clarification where the catalog name does not identify a unique physical design"
+    },
+    "model_kind": {
+      "type": "string",
+      "enum": [
+        "generic_procedural",
+        "exact"
+      ],
+      "default": "generic_procedural"
+    },
+    "model_url": {
+      "type": "string",
+      "description": "Optional .glb or .gltf of this exact product (exported from Blender). Replaces the approximate model in the 3D view."
+    },
+    "model_rotation": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Model orientation in degrees [x, y, z], applied before the model is fitted into the build"
+    },
+    "specs": {
+      "type": "object",
+      "description": "Category-specific specifications"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "name",
+    "category"
+  ],
+  "rls": {
+    "read": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

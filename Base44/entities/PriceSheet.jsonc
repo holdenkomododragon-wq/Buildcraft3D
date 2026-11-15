@@ -1,0 +1,58 @@
+{
+  "name": "PriceSheet",
+  "type": "object",
+  "properties": {
+    "spreadsheet_id": {
+      "type": "string",
+      "description": "Google Sheets spreadsheet id the app writes prices into"
+    },
+    "title": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "description": "Link the sheet is opened at"
+    },
+    "rows": {
+      "type": "number",
+      "description": "How many parts were written on the last sync"
+    },
+    "synced_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "spreadsheet_id"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "user"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

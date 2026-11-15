@@ -1,0 +1,134 @@
+{
+  "name": "Build",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "private",
+        "public"
+      ],
+      "default": "private"
+    },
+    "build_category": {
+      "type": "string",
+      "enum": [
+        "Gaming",
+        "Workstation",
+        "Streaming",
+        "Content creation",
+        "General use"
+      ],
+      "default": "Gaming"
+    },
+    "items": {
+      "type": "object",
+      "description": "Selected parts per slot: { slot: [{partId, qty, config}] }"
+    },
+    "settings": {
+      "type": "object",
+      "description": "3D scene settings: fans, RGB, glass, grid"
+    },
+    "total_price": {
+      "type": "number"
+    },
+    "power_w": {
+      "type": "number"
+    },
+    "compat_status": {
+      "type": "string",
+      "enum": [
+        "compatible",
+        "warning",
+        "incompatible",
+        "unknown"
+      ]
+    },
+    "timespy_estimate": {
+      "type": "number"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "case_name": {
+      "type": "string"
+    },
+    "cpu_name": {
+      "type": "string"
+    },
+    "gpu_name": {
+      "type": "string"
+    },
+    "price_history": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Total price recorded at each save"
+    }
+  },
+  "required": [
+    "title"
+  ],
+  "rls": {
+    "read": {
+      "$or": [
+        {
+          "data.visibility": "public"
+        },
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "create": {
+      "$or": [
+        {
+          "user_condition": {
+            "role": "user"
+          }
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by_id": "{{user.id}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}
